@@ -1,0 +1,10 @@
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\bin\Debug\Projet5e_PosteDeComande.exe.config
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\bin\Debug\Projet5e_PosteDeComande.exe
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\bin\Debug\Projet5e_PosteDeComande.pdb
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.csproj.AssemblyReference.cache
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.Poste_De_Controle.resources
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.Properties.Resources.resources
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.csproj.GenerateResource.cache
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.csproj.CoreCompileInputs.cache
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.exe
+D:\Ecole\5eSession\ProjetFinal\Projet_5e_Usine\PosteDeCommande\PC\Projet5e_PosteDeComande\Projet5e_PosteDeComande\obj\Debug\Projet5e_PosteDeComande.pdb
