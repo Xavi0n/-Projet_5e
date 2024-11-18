@@ -27,6 +27,19 @@ int nbytes;				  // Number of bytes either send or received from the CAN interfa
 
 int uart_fd = -1; // File descriptor for UART communication
 
+
+/////////////////////////////////
+//MAIN
+/////////////////////////////////
+void main(void)
+{
+
+}
+
+
+/////////////////////////////////
+//Fonctions appelees dans MAIN
+/////////////////////////////////
 int InitCan(int argc, char *argv[]) // char **argv
 {
 	printf("Projet de 5e session, station Poste de Contôle\r\n"); // Displays the start message on a terminal
@@ -112,6 +125,7 @@ int CloseUART()
 
 int ReceiveCAN()
 {
+	
 }
 
 int TransmitCAN()
