@@ -84,9 +84,6 @@
     <None Include="Resources\Apercu_Systeme_Sans_VehiculeResized.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\LeVehiculeEnQuestion.png" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="Resources\LeVehiculeEnQuestion_Resized.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
