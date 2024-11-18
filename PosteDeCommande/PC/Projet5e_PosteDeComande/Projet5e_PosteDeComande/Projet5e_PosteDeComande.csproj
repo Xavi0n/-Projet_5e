@@ -81,10 +81,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Vehicule.bmp" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\Apercu_Systeme_Sans_VehiculeResized.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\LeVehiculeEnQuestion_Resized.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Apercu_Systeme_Sans_VehiculeResized1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LeVehiculeEnQuestion_Resized1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

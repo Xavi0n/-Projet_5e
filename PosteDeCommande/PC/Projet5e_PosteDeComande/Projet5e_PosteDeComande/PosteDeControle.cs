@@ -34,11 +34,11 @@ namespace Projet5e_PosteDeComande
 
         private void PopulateCOMPorts()
         {
-            COMPorts_comboBox.Items.AddRange(SerialPort.GetPortNames());
-            if (COMPorts_comboBox.Items.Count > 0)
-            {
-                COMPorts_comboBox.SelectedIndex = 0; // Select the first port by default
-            }
+            //COMPorts_comboBox.Items.AddRange(SerialPort.GetPortNames());
+            //if (COMPorts_comboBox.Items.Count > 0)
+            //{
+            //    COMPorts_comboBox.SelectedIndex = 0; // Select the first port by default
+            //}
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -86,27 +86,27 @@ namespace Projet5e_PosteDeComande
         private void EnvoiDeLaTrame()
         {
             // Convert the character array (assumed to exist) to a byte array
-            byte[] data = Array.ConvertAll(cTrameOut, c => (byte)c);
+            //byte[] data = Array.ConvertAll(cTrameOut, c => (byte)c);
 
-            // Get the selected COM port from a dropdown menu (example: comboBoxCOMPorts)
-            string selectedPort = COMPorts_comboBox.SelectedItem?.ToString();
+            //// Get the selected COM port from a dropdown menu (example: comboBoxCOMPorts)
+            //string selectedPort = COMPorts_comboBox.SelectedItem?.ToString();
 
-            try
-            {
-                // Open and configure the serial port
-                using (SerialPort serialPort = new SerialPort(selectedPort, 19200, Parity.None, 8, StopBits.One))
-                {
-                    serialPort.Open();
+            //try
+            //{
+            //    // Open and configure the serial port
+            //    using (SerialPort serialPort = new SerialPort(selectedPort, 19200, Parity.None, 8, StopBits.One))
+            //    {
+            //        serialPort.Open();
 
-                    // Send the byte array
-                    serialPort.Write(data, 0, data.Length);
-                    MessageBox.Show("Message sent successfully at 19200 baud.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to send message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+            //        // Send the byte array
+            //        serialPort.Write(data, 0, data.Length);
+            //        MessageBox.Show("Message sent successfully at 19200 baud.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            //    }
+            //}
+            //catch (Exception ex)
+            //{
+            //    MessageBox.Show($"Failed to send message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //}
         }
         private void ReceptionDeLaTrame()
         {

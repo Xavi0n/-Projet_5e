@@ -33,22 +33,22 @@
             this.ConnexionSerie_Panel = new System.Windows.Forms.Panel();
             this.ConnexionSerie_Label = new System.Windows.Forms.Label();
             this.VehiculeParcours_Panel = new System.Windows.Forms.Panel();
-            this.SystemOverview_Panel = new System.Windows.Forms.Panel();
-            this.Vehicle_Picture = new System.Windows.Forms.PictureBox();
             this.VehiculeParcours_Label = new System.Windows.Forms.Label();
             this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
             this.Controle_Panel = new System.Windows.Forms.Panel();
             this.Controle_Label = new System.Windows.Forms.Label();
             this.Chargement_Panel = new System.Windows.Forms.Panel();
             this.Chargement_Label = new System.Windows.Forms.Label();
+            this.SystemOverview_Panel = new System.Windows.Forms.Panel();
+            this.Vehicle_Picture = new System.Windows.Forms.PictureBox();
             this.tableLayoutPanel1.SuspendLayout();
             this.ConnexionSerie_Panel.SuspendLayout();
             this.VehiculeParcours_Panel.SuspendLayout();
-            this.SystemOverview_Panel.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.Vehicle_Picture)).BeginInit();
             this.tableLayoutPanel2.SuspendLayout();
             this.Controle_Panel.SuspendLayout();
             this.Chargement_Panel.SuspendLayout();
+            this.SystemOverview_Panel.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.Vehicle_Picture)).BeginInit();
             this.SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -107,27 +107,6 @@
             this.VehiculeParcours_Panel.Name = "VehiculeParcours_Panel";
             this.VehiculeParcours_Panel.Size = new System.Drawing.Size(792, 416);
             this.VehiculeParcours_Panel.TabIndex = 2;
-            // 
-            // SystemOverview_Panel
-            // 
-            this.SystemOverview_Panel.BackgroundImage = global::Projet5e_PosteDeComande.Properties.Resources.Apercu_Systeme_Sans_VehiculeResized;
-            this.SystemOverview_Panel.Controls.Add(this.Vehicle_Picture);
-            this.SystemOverview_Panel.Location = new System.Drawing.Point(-1, 35);
-            this.SystemOverview_Panel.Margin = new System.Windows.Forms.Padding(0);
-            this.SystemOverview_Panel.Name = "SystemOverview_Panel";
-            this.SystemOverview_Panel.Size = new System.Drawing.Size(792, 374);
-            this.SystemOverview_Panel.TabIndex = 1;
-            // 
-            // Vehicle_Picture
-            // 
-            this.Vehicle_Picture.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.Vehicle_Picture.Image = global::Projet5e_PosteDeComande.Properties.Resources.LeVehiculeEnQuestion_Resized;
-            this.Vehicle_Picture.Location = new System.Drawing.Point(208, 164);
-            this.Vehicle_Picture.Margin = new System.Windows.Forms.Padding(0);
-            this.Vehicle_Picture.Name = "Vehicle_Picture";
-            this.Vehicle_Picture.Size = new System.Drawing.Size(73, 98);
-            this.Vehicle_Picture.TabIndex = 0;
-            this.Vehicle_Picture.TabStop = false;
             // 
             // VehiculeParcours_Label
             // 
@@ -204,6 +183,26 @@
             this.Chargement_Label.TabIndex = 3;
             this.Chargement_Label.Text = "Chargement du véhicule";
             // 
+            // SystemOverview_Panel
+            // 
+            this.SystemOverview_Panel.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.SystemOverview_Panel.BackgroundImage = global::Projet5e_PosteDeComande.Properties.Resources.Apercu_Systeme_Sans_VehiculeResized;
+            this.SystemOverview_Panel.Controls.Add(this.Vehicle_Picture);
+            this.SystemOverview_Panel.Location = new System.Drawing.Point(-1, 37);
+            this.SystemOverview_Panel.Name = "SystemOverview_Panel";
+            this.SystemOverview_Panel.Size = new System.Drawing.Size(792, 374);
+            this.SystemOverview_Panel.TabIndex = 1;
+            // 
+            // Vehicle_Picture
+            // 
+            this.Vehicle_Picture.Image = global::Projet5e_PosteDeComande.Properties.Resources.LeVehiculeEnQuestion_Resized;
+            this.Vehicle_Picture.Location = new System.Drawing.Point(208, 164);
+            this.Vehicle_Picture.Name = "Vehicle_Picture";
+            this.Vehicle_Picture.Size = new System.Drawing.Size(73, 98);
+            this.Vehicle_Picture.TabIndex = 0;
+            this.Vehicle_Picture.TabStop = false;
+            // 
             // Poste_De_Controle
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -223,13 +222,13 @@
             this.ConnexionSerie_Panel.PerformLayout();
             this.VehiculeParcours_Panel.ResumeLayout(false);
             this.VehiculeParcours_Panel.PerformLayout();
-            this.SystemOverview_Panel.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.Vehicle_Picture)).EndInit();
             this.tableLayoutPanel2.ResumeLayout(false);
             this.Controle_Panel.ResumeLayout(false);
             this.Controle_Panel.PerformLayout();
             this.Chargement_Panel.ResumeLayout(false);
             this.Chargement_Panel.PerformLayout();
+            this.SystemOverview_Panel.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.Vehicle_Picture)).EndInit();
             this.ResumeLayout(false);
 
         }

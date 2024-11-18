@@ -73,16 +73,6 @@ namespace Projet5e_PosteDeComande.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap LeVehiculeEnQuestion {
-            get {
-                object obj = ResourceManager.GetObject("LeVehiculeEnQuestion", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap LeVehiculeEnQuestion_Resized {
             get {
                 object obj = ResourceManager.GetObject("LeVehiculeEnQuestion_Resized", resourceCulture);
