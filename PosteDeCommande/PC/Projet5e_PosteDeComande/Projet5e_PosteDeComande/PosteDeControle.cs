@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO.Ports;
 using System.Linq;
@@ -15,6 +16,9 @@ namespace Projet5e_PosteDeComande
     {
         char[] cTrameOut;
         char[] cTrameIn;
+        string sCouleurBloc = "non_defini";
+        private string callingFunction = string.Empty;
+
         public enum StationState
         {
             WEIGHING_STATION = 0,
@@ -34,11 +38,11 @@ namespace Projet5e_PosteDeComande
 
         private void PopulateCOMPorts()
         {
-            //COMPorts_comboBox.Items.AddRange(SerialPort.GetPortNames());
-            //if (COMPorts_comboBox.Items.Count > 0)
-            //{
-            //    COMPorts_comboBox.SelectedIndex = 0; // Select the first port by default
-            //}
+            COMPorts_comboBox.Items.AddRange(SerialPort.GetPortNames());
+            if (COMPorts_comboBox.Items.Count > 0)
+            {
+                COMPorts_comboBox.SelectedIndex = 0; // Select the first port by default
+            }
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -82,35 +86,120 @@ namespace Projet5e_PosteDeComande
         {
             //Poids_TextBox.Text = fPoidsRondelle.ToString();
         }
+        private void AjustementDeLaCouleur()
+        {
+            if (sCouleurBloc == "non_defini")
+            {
+                OrangePuck_Panel.Visible = false;
+                BlackPuck_Panel.Visible  = false;
+                GreyPuck_Panel.Visible   = false;
+                CouleurNonDefinie_Label.Visible  = true;
+            }
+            if (sCouleurBloc == "orange")
+            {
+                OrangePuck_Panel.Visible = true;
+                BlackPuck_Panel.Visible  = false;
+                GreyPuck_Panel.Visible   = false;
+                CouleurNonDefinie_Label.Visible  = false;
+            }
+            if (sCouleurBloc == "noir")
+            {
+                OrangePuck_Panel.Visible = false;
+                BlackPuck_Panel.Visible  = true;
+                GreyPuck_Panel.Visible   = false;
+                CouleurNonDefinie_Label.Visible  = false;
+            }
+            if (sCouleurBloc == "gris")
+            {
+                OrangePuck_Panel.Visible = false;
+                BlackPuck_Panel.Visible  = false;
+                GreyPuck_Panel.Visible   = true;
+                CouleurNonDefinie_Label.Visible  = false;
+            }
+        }
 
         private void EnvoiDeLaTrame()
         {
-            // Convert the character array (assumed to exist) to a byte array
-            //byte[] data = Array.ConvertAll(cTrameOut, c => (byte)c);
+            if (callingFunction == "Demarrer")
+            {
 
-            //// Get the selected COM port from a dropdown menu (example: comboBoxCOMPorts)
-            //string selectedPort = COMPorts_comboBox.SelectedItem?.ToString();
+            }
+            else if (callingFunction == "Arreter")
+            {
 
-            //try
-            //{
-            //    // Open and configure the serial port
-            //    using (SerialPort serialPort = new SerialPort(selectedPort, 19200, Parity.None, 8, StopBits.One))
-            //    {
-            //        serialPort.Open();
-
-            //        // Send the byte array
-            //        serialPort.Write(data, 0, data.Length);
-            //        MessageBox.Show("Message sent successfully at 19200 baud.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    }
-            //}
-            //catch (Exception ex)
-            //{
-            //    MessageBox.Show($"Failed to send message: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+            }
+            else
+            {
+                Debug.WriteLine("Called from an unknown source");
+            }
         }
         private void ReceptionDeLaTrame()
         {
+            //Faire ici la reception de la trame, ainsi que le stockage
+            //des informations recues dans les variables appropriées
+            AjustementDuPoids();
+            AjustementDeLaCouleur();
+            AjustementPositionVehicule();
+        }
+
+        private void Connecter_Button_Click(object sender, EventArgs e)
+        {
+            if (Connecter_Button.Text == "Connecter")           //Si l'utilisateur désire se connecter
+            {                                                   //
+                Demarrer_Button.Enabled = true;                 //On active l'option pour démarrer l'usine
+                COMPorts_comboBox.Enabled = false;              //On désactive l'option de changer de COM port
+                Connecter_Button.Text = "Déconnecter";          //On remplace le texte du bouton par "Déconnecter"
+                InitUART();
+            }
+            else if (Connecter_Button.Text == "Déconnecter")    //Si l'utilisateur désire se déconnecter
+            {                                                   //
+                Connecter_Button.Text = "Connecter";            //On remplace le texte du bouton par "Connecter"
+                Demarrer_Button.Enabled = false;                //On désactive l'option pour démarrer l'usine
+                COMPorts_comboBox.Enabled = true;               //On réactive l'option de changer de COM port
+                CloseUART();
+            }
+        }
+
+        private void Demarrer_Button_Click(object sender, EventArgs e)
+        {
+            Arreter_Button.Enabled = true;          //Activation du bouton pour arreter l'usine
+            Connecter_Button.Enabled = false;       //Desactivation de l'option de deconnecter le port UART
+            callingFunction = "Demarrer";           //Garde le nom de la fonction qui a appelé l'envoi de la trame
+            //Mettre dans la trame ce que l'on veut envoyer
+            EnvoiDeLaTrame();
+            //Reset de la trame pour la prochaine utilisation
+            Demarrer_Button.Enabled = false;        //Desactivation du bouton Demarrer
+        }
+        private void Arreter_Button_Click(object sender, EventArgs e)
+        {
+            Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
+            Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
+            callingFunction = "Arreter";            //Garde le nom de la fonction qui a appelé l'envoi de la trame
+            //Mettre dans la trame ce que l'on veut envoyer
+            EnvoiDeLaTrame();
+            //Reset de la trame pour la prochaine utilisation
+            Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
+        }
+
+        private void InitUART()
+        {
             
+        }
+        private void CloseUART()
+        {
+
+        }
+
+        private void Ounces_Checkbox_Click(object sender, EventArgs e)
+        {
+            Ounces_Checkbox.Checked = true;
+            Grams_Checkbox.Checked = false;
+        }
+
+        private void Grams_Checkbox_Click(object sender, EventArgs e)
+        {
+            Grams_Checkbox.Checked = true;
+            Ounces_Checkbox.Checked= false;
         }
     }
 }
