@@ -14,8 +14,9 @@ namespace Projet5e_PosteDeComande
 {
     public partial class Poste_De_Controle : Form
     {
-        char[] cTrameOut;
-        char[] cTrameIn;
+        private SerialPort uartPort;
+        byte[] cTrameOut = new byte[10] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        byte[] cTrameIn = new byte[10] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
         string sCouleurBloc = "non_defini";
         private string callingFunction = string.Empty;
 
@@ -34,6 +35,8 @@ namespace Projet5e_PosteDeComande
         {
             InitializeComponent();
             PopulateCOMPorts();
+            uartPort = new SerialPort();
+            this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
         }
 
         private void PopulateCOMPorts()
@@ -50,7 +53,7 @@ namespace Projet5e_PosteDeComande
 
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //AJOUTER APPEL A CETTE FONCTION QUAND ON RECOIT DES INFOS SUR LA POSITION DU VEHICULE DE LA PART DU BBB
+        //AJOUTER APPELS AU 3 PROCHAINES FONCTIONs QUAND ON RECOIT DES INFOS SUR LA POSITION DU VEHICULE DE LA PART DU BBB
         ////////////////////////////////////////////////////////////////////////////////////////////////////////
         private void AjustementPositionVehicule()
         {
@@ -122,15 +125,55 @@ namespace Projet5e_PosteDeComande
         {
             if (callingFunction == "Demarrer")
             {
+                // Assign values in hexadecimal format
+                cTrameOut[0] = 0x24; // '$' in ASCII (hexadecimal: 0x24)    //Start condition
+                cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            //Amount of bytes to be transmitted
+                cTrameOut[2] = 0x01; // Decimal 1 in hexadecimal            //Identifier for control post
+                cTrameOut[3] = 0x44; // Decimal D in hexadecimal            //Command ('D' is for Starting the factory)
+                cTrameOut[4] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[5] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[6] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[7] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[8] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                                                                            //
+                byte checksum = 0x00; // Reset checksum byte                //
+                for (int i = 0; i < 9; i++) // Calculate checksum           //
+                {                                                           //
+                    checksum += cTrameOut[i];                               //
+                }                                                           //
+                cTrameOut[9] = checksum;                                    //Checksum
 
+                foreach (byte b in cTrameOut)           
+                {
+                    Debug.Write($"{b} ");               //Writes Data to Visual Studio Output window (for debug purposes)
+                    //Sends the command on UART port
+                }
             }
             else if (callingFunction == "Arreter")
             {
+                // Assign values in hexadecimal format
+                cTrameOut[0] = 0x24; // '$' in ASCII (hexadecimal: 0x24)    //Start condition
+                cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            //Amount of bytes to be transmitted
+                cTrameOut[2] = 0x01; // Decimal 1 in hexadecimal            //Identifier for control post
+                cTrameOut[3] = 0x41; // Decimal A in hexadecimal            //Command ('A' is for stopping the factory)
+                cTrameOut[4] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[5] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[6] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[7] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                cTrameOut[8] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
+                                     //
+                byte checksum = 0x00; // Reset checksum byte                //
+                for (int i = 0; i < 9; i++) // Calculate checksum           //
+                {                                                           //
+                    checksum += cTrameOut[i];                               //
+                }                                                           //
+                cTrameOut[9] = checksum;                                    //Checksum
 
-            }
-            else
-            {
-                Debug.WriteLine("Called from an unknown source");
+                foreach (byte b in cTrameOut)
+                {
+                    Debug.Write($"{b} ");               //Writes Data to Visual Studio Output window (for debug purposes)
+                    //Sends the command on UART port
+                }
             }
         }
         private void ReceptionDeLaTrame()
@@ -183,11 +226,38 @@ namespace Projet5e_PosteDeComande
 
         private void InitUART()
         {
-            
+            if (COMPorts_comboBox.SelectedItem == null)     // Check if a COM port is selected
+            {
+                MessageBox.Show("Please select a COM port.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            string selectedPort = COMPorts_comboBox.SelectedItem.ToString();    // Get the selected COM port
+
+            if (uartPort.IsOpen)    {uartPort.Close();}    // Close the port if it's already open
+
+            try           // Configure the serial port
+            {
+                uartPort.PortName = selectedPort;       //Use the port selected in the drop down box
+                uartPort.BaudRate = 19200;              //Set baud rate to 19200
+                uartPort.Parity = Parity.None;          //No parity bit
+                uartPort.StopBits = StopBits.One;       //One stop bit
+                uartPort.DataBits = 8;                  //8 bit structure
+                uartPort.Handshake = Handshake.None;    //No handshake
+                uartPort.Open();                        //Open the port
+                MessageBox.Show($"Successfully opened {selectedPort}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to open {selectedPort}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void CloseUART()
         {
-
+            if (uartPort.IsOpen)
+            {
+                uartPort.Close();
+            }
         }
 
         private void Ounces_Checkbox_Click(object sender, EventArgs e)
@@ -200,6 +270,14 @@ namespace Projet5e_PosteDeComande
         {
             Grams_Checkbox.Checked = true;
             Ounces_Checkbox.Checked= false;
+        }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (uartPort.IsOpen)
+            {
+                uartPort.Close();
+            }
         }
     }
 }
