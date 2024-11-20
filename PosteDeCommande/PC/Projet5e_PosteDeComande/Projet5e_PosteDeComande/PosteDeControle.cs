@@ -17,8 +17,15 @@ namespace Projet5e_PosteDeComande
         private SerialPort uartPort;
         byte[] cTrameOut = new byte[10] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
         byte[] cTrameIn = new byte[10] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-        string sCouleurBloc = "non_defini";
         private string callingFunction = string.Empty;
+        string selectedPort;
+
+        public static class PuckColors
+        {
+            public const char ORANGE = 'O';
+            public const char NOIR = 'N';
+            public const char METALLIQUE = 'M';
+        }
 
         public enum StationState
         {
@@ -28,8 +35,7 @@ namespace Projet5e_PosteDeComande
             SORTING_STATION = 3
         }
         StationState currentState = StationState.WEIGHING_STATION;
-        float fPoidsRondelle;
-        bool bTrameAEnvoyer;
+        double dPoidsRondelle;
 
         public Poste_De_Controle()
         {
@@ -37,6 +43,7 @@ namespace Projet5e_PosteDeComande
             PopulateCOMPorts();
             uartPort = new SerialPort();
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
+            uartPort.DataReceived += ReceptionDeLaTrame;            // Register the DataReceived event handler
         }
 
         private void PopulateCOMPorts()
@@ -52,9 +59,7 @@ namespace Projet5e_PosteDeComande
         {
 
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //AJOUTER APPELS AU 3 PROCHAINES FONCTIONs QUAND ON RECOIT DES INFOS SUR LA POSITION DU VEHICULE DE LA PART DU BBB
-        ////////////////////////////////////////////////////////////////////////////////////////////////////////
+        
         private void AjustementPositionVehicule()
         {
             switch (currentState)
@@ -87,37 +92,46 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementDuPoids()
         {
-            //Poids_TextBox.Text = fPoidsRondelle.ToString();
+            double dGramsToOunces = 28.3495;
+            string hexString = cTrameIn[4].ToString();      //Convertir la valeur hexa de la trame en valeur
+            string cleanHex = hexString.Substring(2);       //décimale qui contient les mêmes termes (ex: 0x34 -> 34)
+            dPoidsRondelle = float.Parse(cleanHex, System.Globalization.NumberStyles.Number);
+
+            if (Ounces_Checkbox.Checked == true)        //Convertir le poids de grammes a onces si 
+            {                                           //la case onces est cochée sur l'interface
+                dPoidsRondelle = dPoidsRondelle / dGramsToOunces;
+            }
+            AffichagePoids_Label.Text = dPoidsRondelle.ToString();  //Afficher le poids de la rondelle sur l'interface
         }
         private void AjustementDeLaCouleur()
         {
-            if (sCouleurBloc == "non_defini")
-            {
-                OrangePuck_Panel.Visible = false;
-                BlackPuck_Panel.Visible  = false;
-                GreyPuck_Panel.Visible   = false;
-                CouleurNonDefinie_Label.Visible  = true;
-            }
-            if (sCouleurBloc == "orange")
+            if (cTrameIn[3] == PuckColors.ORANGE)
             {
                 OrangePuck_Panel.Visible = true;
                 BlackPuck_Panel.Visible  = false;
                 GreyPuck_Panel.Visible   = false;
                 CouleurNonDefinie_Label.Visible  = false;
             }
-            if (sCouleurBloc == "noir")
+            if (cTrameIn[3] == PuckColors.NOIR)
             {
                 OrangePuck_Panel.Visible = false;
                 BlackPuck_Panel.Visible  = true;
                 GreyPuck_Panel.Visible   = false;
                 CouleurNonDefinie_Label.Visible  = false;
             }
-            if (sCouleurBloc == "gris")
+            if (cTrameIn[3] == PuckColors.METALLIQUE)
             {
                 OrangePuck_Panel.Visible = false;
                 BlackPuck_Panel.Visible  = false;
                 GreyPuck_Panel.Visible   = true;
                 CouleurNonDefinie_Label.Visible  = false;
+            }
+            else
+            {
+                OrangePuck_Panel.Visible = false;
+                BlackPuck_Panel.Visible = false;
+                GreyPuck_Panel.Visible = false;
+                CouleurNonDefinie_Label.Visible = true;
             }
         }
 
@@ -145,9 +159,10 @@ namespace Projet5e_PosteDeComande
 
                 foreach (byte b in cTrameOut)           
                 {
-                    Debug.Write($"{b} ");               //Writes Data to Visual Studio Output window (for debug purposes)
+                    Debug.Write($"{b:x2} ");               //Writes Data to Visual Studio Output window (for debug purposes)
                     //Sends the command on UART port
                 }
+                Debug.WriteLine("\n");
             }
             else if (callingFunction == "Arreter")
             {
@@ -171,18 +186,53 @@ namespace Projet5e_PosteDeComande
 
                 foreach (byte b in cTrameOut)
                 {
-                    Debug.Write($"{b} ");               //Writes Data to Visual Studio Output window (for debug purposes)
+                    Debug.Write($"{b:x2} ");               //Writes Data to Visual Studio Output window (for debug purposes)
                     //Sends the command on UART port
                 }
+                Debug.WriteLine("\n");
             }
         }
-        private void ReceptionDeLaTrame()
+        private void ReceptionDeLaTrame(object sender, SerialDataReceivedEventArgs e)
         {
-            //Faire ici la reception de la trame, ainsi que le stockage
-            //des informations recues dans les variables appropriées
-            AjustementDuPoids();
-            AjustementDeLaCouleur();
-            AjustementPositionVehicule();
+            try
+            {
+                if (uartPort.BytesToRead >= 10)          // Only process data when available
+                {
+                    uartPort.Read(cTrameIn, 0, 10);      // Read up to 10 bytes from the serial port
+
+                    if (cTrameIn[0] == 0x24)             // Check if the first byte is '$' (0x24 in ASCII)
+                    {
+                        byte checksum = 0;
+                        for (int i = 0; i < 9; i++)      // Sum all bytes except checksum byte
+                        {
+                            checksum += cTrameIn[i];
+                        }
+
+                        if (checksum == cTrameIn[9])     //If the checksum matches, update the inteface
+                        {
+                            if (cTrameIn[2] == 'I')             //Si la trame donne une information au système
+                            {
+                                AjustementDuPoids();            //Ajustement du poids de la puck transportée par le véhicule
+                                AjustementDeLaCouleur();        //Ajustement de la couleur de la puck transportée par le véhicule
+                                AjustementPositionVehicule();   //Ajustement de la position du véhicule
+                            }
+                        }
+                        else   //Handle checksum mismatch
+                        {
+                            MessageBox.Show("Checksum mismatch.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                    }
+                    else   //Handles invalid start byte
+                    {
+                        MessageBox.Show("Incorrect frame start byte. Expected '$'.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    uartPort.DiscardInBuffer();     //Clears the UART port data buffer after it has been handled
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error receiving data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void Connecter_Button_Click(object sender, EventArgs e)
@@ -232,7 +282,7 @@ namespace Projet5e_PosteDeComande
                 return;
             }
 
-            string selectedPort = COMPorts_comboBox.SelectedItem.ToString();    // Get the selected COM port
+            selectedPort = COMPorts_comboBox.SelectedItem.ToString();    // Get the selected COM port
 
             if (uartPort.IsOpen)    {uartPort.Close();}    // Close the port if it's already open
 
@@ -256,7 +306,15 @@ namespace Projet5e_PosteDeComande
         {
             if (uartPort.IsOpen)
             {
-                uartPort.Close();
+                try
+                {
+                    uartPort.Close();
+                    MessageBox.Show($"Successfully closed {selectedPort}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"Failed to close {selectedPort}: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
