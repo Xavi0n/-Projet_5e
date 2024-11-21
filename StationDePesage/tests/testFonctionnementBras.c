@@ -10,6 +10,23 @@
 #include <stdlib.h>   // Pour exit()
 
 const char *portTTY = "/dev/ttyACM0"; 
+int fd_portUART;
+int retour = 0;
+    char TestCondition[] = "G2202 F1000\n";
+    char Move[] = "#10 G0 X340 Y0 Z0 F8000\n";
+    char Move2[] ="#11 G0 X300 Y70 Z70 F5000\n";
+    char Buzzer[] = "#12 M2210 F1000 T2000\n";
+    char PumpOn[] = "#13 M2231 V1\n";
+    char PumpOff[] = "#14 M2231 V0\n";
+    char ObtenirPosition[] = "#15 P2220\n";
+    char ObtenirPosition2[] = "#16 P2220\n";
+    char cLecture[25];
+    char cLecture2[25];
+
+void PumpActif(void);
+void PumpInactif(void);
+void Move1(void);
+void Move3(void);
 
 void configure_serial(int fd) 
 {
@@ -47,16 +64,7 @@ void configure_serial(int fd)
 
 int main(void) 
 {
-    int fd_portUART;
-    int retour = 0;
-    char TestCondition[] = "G2202 F1000\n";
-    char Move[] = "G0 X340 Y0 Z0 F5000\n";
-    char Move2[] ="G0 X100 Y100 Z100 F2000\n";
-    char Buzzer[] = "M2210 F1000 T2000\n";
-    char PumpOn[] = "M2231 V1\n";
-    char PumpOff[] = "M2231 V0\n";
-    char Delay1000ms[] = "G2004 P1000\n";
-    unsigned char NombreATransmettre;
+    
 
     // Ouverture du port série 
     fd_portUART = open(portTTY, O_RDWR | O_NOCTTY | O_NDELAY);
@@ -67,27 +75,88 @@ int main(void)
     }
     configure_serial(fd_portUART);
 
-    //Source = "G0 X100 Y100 Z100 F1000\n";
-    NombreATransmettre = 24;
+    Move1();
 
-    tcflush(fd_portUART, TCOFLUSH);  
-    //retour = (int)write(fd_portUART, TestCondition, sizeof(TestCondition));
-    sleep(1);
-    //retour =write(fd_portUART, PumpOn, sizeof(PumpOn));
-    sleep(1);
-    tcflush(fd_portUART, TCOFLUSH);  
-    sleep(1);
-    retour =write(fd_portUART, Move, sizeof(Move));
-    sleep(1);
-    tcflush(fd_portUART, TCOFLUSH);  
-    sleep(1);
-    retour =write(fd_portUART, Move2, sizeof(Move2));
-    //retour = (int)tcdrain(fd_portUART);
-    sleep(1);
-    tcflush(fd_portUART, TCIOFLUSH);   
-    sleep(1);
+    PumpActif();
+
+    Move3();
+
+    PumpInactif();
+
     close(fd_portUART);
     
     printf("retour = %i\n", retour);
 
+}
+
+void Move1(void)
+{
+    tcflush(fd_portUART, TCOFLUSH);  
+    sleep(1);
+    retour =write(fd_portUART, Move, (sizeof(Move)-1));
+    sleep(10);
+
+    read(fd_portUART, cLecture, 29);  
+    printf("\nLecture 1 :\n");
+    printf(cLecture);
+    printf("\n..\n");
+    tcflush(fd_portUART, TCIFLUSH);         
+
+    tcflush(fd_portUART, TCOFLUSH);  
+    write(fd_portUART, ObtenirPosition, (sizeof(ObtenirPosition)-1));
+
+    while(cLecture[0] != '$' && cLecture[1] != '1' && cLecture[2] != '5')
+    {
+        
+        read(fd_portUART, cLecture, (sizeof(cLecture)-1));  
+       // printf(".");
+    }
+    printf("\nLecture 1 :\n");
+    printf(cLecture);
+    printf("\n..\n");
+    tcflush(fd_portUART, TCIFLUSH);  
+}
+
+void Move3(void)
+{
+        sleep(5);
+    tcflush(fd_portUART, TCOFLUSH);  
+    sleep(1);
+    retour =write(fd_portUART, Move2, (sizeof(Move2)-1));
+    sleep(15);  
+ 
+    write(fd_portUART, ObtenirPosition2, (sizeof(ObtenirPosition2)-1));
+    sleep(5);
+   /* while(cLecture[0] != '$' && cLecture[1] != '1' && cLecture[2] != '1')
+    {*/
+        read(fd_portUART, cLecture2, (sizeof(cLecture2)-1));  
+        /*printf(".");
+    }*/
+    printf("\nLecture 2 :\n");
+    printf(cLecture2);
+    printf("\n..\n");
+    tcflush(fd_portUART, TCIFLUSH);  
+    sleep(1);
+}
+
+void PumpActif(void)
+{
+    sleep(5);
+    tcflush(fd_portUART, TCOFLUSH);  
+    sleep(1);
+    retour =write(fd_portUART, PumpOn, (sizeof(PumpOn)-1));
+    sleep(15);  
+    tcflush(fd_portUART, TCIFLUSH);  
+    sleep(1);
+}
+
+void PumpInactif(void)
+{
+    sleep(5);
+    tcflush(fd_portUART, TCOFLUSH);  
+    sleep(1);
+    retour =write(fd_portUART, PumpOff, (sizeof(PumpOff)-1));
+    sleep(15);  
+    tcflush(fd_portUART, TCIFLUSH);  
+    sleep(1);
 }

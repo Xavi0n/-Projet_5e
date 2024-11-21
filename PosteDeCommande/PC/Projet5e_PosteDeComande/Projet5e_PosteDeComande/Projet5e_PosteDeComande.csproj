@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -81,13 +84,19 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Vehicule.bmp" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\Apercu_Systeme_Sans_VehiculeResized.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\LeVehiculeEnQuestion.png" />
+    <None Include="Resources\LeVehiculeEnQuestion_Resized.png" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\LeVehiculeEnQuestion_Resized.png" />
+    <None Include="Resources\Apercu_Systeme_Sans_VehiculeResized1.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\LeVehiculeEnQuestion_Resized1.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
