@@ -1,5 +1,6 @@
 #define _DEFAULT_SOURCE
 
+#include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -18,17 +19,17 @@
 #define UART_PORT "/dev/ttyS1" // Define UART port (e.g., /dev/ttyS1 for UART1)
 #define BAUD_RATE B19200	   // Set baud rate to 19200
 
-#define CAN_BUFFER_SIZE 	8
-#define UART_BUFFER_SIZE 	10
+#define CAN_BUFFER_SIZE 8
+#define UART_BUFFER_SIZE 10
 
-int fdSocketCAN;			   // File descriptor for the CAN socket
-struct sockaddr_can addr;	   // Structure to store the CAN socket address
-struct ifreq ifr;			   // Structure to store information about the CAN interface
-struct can_frame frame;		   // CAN frame for message data
-unsigned char UARTFrameIn[10];  // Frame for data incoming from PC app
+int fdSocketCAN;				// File descriptor for the CAN socket
+struct sockaddr_can addr;		// Structure to store the CAN socket address
+struct ifreq ifr;				// Structure to store information about the CAN interface
+struct can_frame frame;			// CAN frame for message data
+unsigned char UARTFrameIn[10];	// Frame for data incoming from PC app
 unsigned char UARTFrameOut[10]; // Frame for data going to PC app
-unsigned char i = 0;		   // Variable for temporary use
-int nbytes;					   // Number of bytes either sent or received from the CAN interface
+unsigned char i = 0;			// Variable for temporary use
+int nbytes;						// Number of bytes either sent or received from the CAN interface
 
 int uart_fd = -1; // File descriptor for UART communication
 
@@ -135,22 +136,22 @@ int ReceiveCAN()
 		return -1;		// Return wit hvalue -1 and displays reading error
 	}
 
-	unsigned char ucCheckSum;						//Variable dans laquelle sera calculé le checksum de la trame CAN recue
-	for (i = 0; i < CAN_BUFFER_SIZE; i++)				//
-	{												//
-		ucCheckSum = ucCheckSum + frame.data[i];	//Calcul du CheckSum
-	}												//
+	unsigned char ucCheckSum;					 // Variable dans laquelle sera calculé le checksum de la trame CAN recue
+	for (i = 0; i < CAN_BUFFER_SIZE; i++)		 //
+	{											 //
+		ucCheckSum = ucCheckSum + frame.data[i]; // Calcul du CheckSum
+	} //
 
-	if (ucCheckSum == frame.data[CAN_BUFFER_SIZE])		//Vérifie si le checksum calcule est egal a celui envoyé
+	if (ucCheckSum == frame.data[CAN_BUFFER_SIZE]) // Vérifie si le checksum calcule est egal a celui envoyé
 	{
-		for (i = 0; i < CAN_BUFFER_SIZE; i++)			//
-		{											//
-			UARTFrameOut[(i+2)] = frame.data[i];		//Copie de la trame recue dans un tableau
-			printf("%02X", UARTFrameOut[i]);		//Printf des valeurs pour dégogage
-		}											//
-		printf("\n");								//
+		for (i = 0; i < CAN_BUFFER_SIZE; i++)	   //
+		{										   //
+			UARTFrameOut[(i + 2)] = frame.data[i]; // Copie de la trame recue dans un tableau
+			printf("%02X", UARTFrameOut[i]);	   // Printf des valeurs pour dégogage
+		} //
+		printf("\n"); //
 
-		TransmitUART();								//Transmission de la trame recue vers le port UART (apli PC)
+		TransmitUART(); // Transmission de la trame recue vers le port UART (apli PC)
 	}
 }
 
@@ -161,17 +162,17 @@ int TransmitCAN()
 	{
 		frame.data[i] = 0x00;
 	}
-	frame.can_id = 0x100;		 		// identifiant CAN du poste de controle
-	frame.can_dlc = CAN_BUFFER_SIZE; 	// nombre d'octets de données
+	frame.can_id = 0x100;			 // identifiant CAN du poste de controle
+	frame.can_dlc = CAN_BUFFER_SIZE; // nombre d'octets de données
 
-	memcpy(frame.data, (UARTFrameIn+2), CAN_BUFFER_SIZE); // Copy UART received data to CAN frame
+	memcpy(frame.data, (UARTFrameIn + 2), CAN_BUFFER_SIZE); // Copy UART received data to CAN frame
 
-	printf("Sending CAN frame:\n");									   	// Outputs what has been sent
-	printf("ID: 0x%03X, DLC: %d, Data:", frame.can_id, frame.can_dlc); 	// to VsCode's debug window
-	for (i = 0; i < frame.can_dlc; i++)								   	//
-	{																   	//
-		printf(" 0x%02X", frame.data[i]);							   	//
-	} 																	//
+	printf("Sending CAN frame:\n");									   // Outputs what has been sent
+	printf("ID: 0x%03X, DLC: %d, Data:", frame.can_id, frame.can_dlc); // to VsCode's debug window
+	for (i = 0; i < frame.can_dlc; i++)								   //
+	{																   //
+		printf(" 0x%02X", frame.data[i]);							   //
+	} //
 	printf("\n"); // Skips a line
 
 	if (write(fdSocketCAN, &frame, sizeof(struct can_frame)) != sizeof(struct can_frame)) // Write data in fdSocketCan to the CAN bus
@@ -181,16 +182,82 @@ int TransmitCAN()
 	}
 }
 
+int enable_uart_interrupt(int uart_fd)
+{
+	// Set up the signal handler
+	struct sigaction saio;
+	saio.sa_handler = ReceiveUART;
+	saio.sa_flags = 0;
+	saio.sa_restorer = NULL;
+	if (sigaction(SIGIO, &saio, NULL) < 0)
+	{
+		perror("Failed to set SIGIO handler");
+		return -1;
+	}
+	// Allow the process to receive SIGIO
+	if (fcntl(uart_fd, F_SETOWN, getpid()) < 0)
+	{
+		perror("Failed to set process owner for SIGIO");
+		return -1;
+	}
+	// Enable asynchronous notifications
+	if (fcntl(uart_fd, F_SETFL, FASYNC) < 0)
+	{
+		perror("Failed to enable FASYNC");
+		return -1;
+	}
+	return 0; // Success
+}
+
 int ReceiveUART()
 {
-	
+	int bytes_available = 0;
+
+	// Check how many bytes are available in the UART receive buffer
+	if (ioctl(uart_fd, FIONREAD, &bytes_available) < 0)
+	{
+		perror("Failed to check bytes available");
+		return -1;
+	}
+
+	// If exactly 10 bytes are available, read them into UARTFrameIn
+	if (bytes_available >= UART_BUFFER_SIZE)
+	{
+		int bytes_read = read(uart_fd, UARTFrameIn, UART_BUFFER_SIZE);
+
+		if (bytes_read == UART_BUFFER_SIZE)
+		{
+			printf("10 bytes received from UART: ");
+			for (i = 0; i < UART_BUFFER_SIZE; i++)
+			{
+				printf("0x%02X ", UARTFrameIn[i]);
+			}
+			printf("\n");
+		}
+		else
+		{
+			printf("Error reading data: expected %d bytes, got %d bytes\n", UART_BUFFER_SIZE, bytes_read);
+		}
+
+		// Clear any extra bytes in the buffer
+		if (bytes_available > UART_BUFFER_SIZE)
+		{
+			char temp[256];
+			read(uart_fd, temp, bytes_available - UART_BUFFER_SIZE);
+		}
+	}
+	else
+	{
+		printf("Not enough data yet: %d bytes available\n", bytes_available);
+	}
+	return 0;
 }
 
 int TransmitUART()
 {
-	UARTFrameOut[0] = 0x24;			//Start Condition de la trame UART ('$' en hexadecimal)
-	UARTFrameOut[1] = 0x08;			//Nombre d'octets de data a transmettre (exclus: '$', nb d'octets à transmettre et checksum)
-	ssize_t bytes_written = write(uart_fd, UARTFrameOut, UART_BUFFER_SIZE);		// Writes data to UART port
+	UARTFrameOut[0] = 0x24;													// Start Condition de la trame UART ('$' en hexadecimal)
+	UARTFrameOut[1] = 0x08;													// Nombre d'octets de data a transmettre (exclus: '$', nb d'octets à transmettre et checksum)
+	ssize_t bytes_written = write(uart_fd, UARTFrameOut, UART_BUFFER_SIZE); // Writes data to UART port
 
 	printf("Sending CAN frame:\n");									   // Outputs what has been sent
 	printf("ID: 0x%03X, DLC: %d, Data:", frame.can_id, frame.can_dlc); // to VsCode's debug window
@@ -200,7 +267,7 @@ int TransmitUART()
 	} //
 	printf("\n");
 
-	for (i = 0; i > UART_BUFFER_SIZE; i++) 	//Reset value for UARTFrameOut
+	for (i = 0; i > UART_BUFFER_SIZE; i++) // Reset value for UARTFrameOut
 	{
 		UARTFrameOut[i] = 0x00;
 	}
