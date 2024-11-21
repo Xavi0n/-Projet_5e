@@ -44,6 +44,7 @@ namespace Projet5e_PosteDeComande
             uartPort = new SerialPort();
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
             uartPort.DataReceived += ReceptionDeLaTrame;            // Register the DataReceived event handler
+            Grams_Checkbox.Checked = true;
         }
 
         private void PopulateCOMPorts()
@@ -92,11 +93,8 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementDuPoids()
         {
-            double dGramsToOunces = 28.3495;
-            string hexString = cTrameIn[4].ToString();      //Convertir la valeur hexa de la trame en valeur
-            string cleanHex = hexString.Substring(2);       //décimale qui contient les mêmes termes (ex: 0x34 -> 34)
-            dPoidsRondelle = float.Parse(cleanHex, System.Globalization.NumberStyles.Number);
-
+            double dGramsToOunces = 28.3495;            //Valeur de conversion grammes / onces
+            dPoidsRondelle = cTrameIn[4];
             if (Ounces_Checkbox.Checked == true)        //Convertir le poids de grammes a onces si 
             {                                           //la case onces est cochée sur l'interface
                 dPoidsRondelle = dPoidsRondelle / dGramsToOunces;
@@ -159,8 +157,8 @@ namespace Projet5e_PosteDeComande
 
                 foreach (byte b in cTrameOut)           
                 {
-                    Debug.Write($"{b:x2} ");               //Writes Data to Visual Studio Output window (for debug purposes)
-                    //Sends the command on UART port
+                    Debug.Write($"{b:x2} ");                //Writes Data to Visual Studio Output window (for debug purposes)
+                    uartPort.Write($"{b:x2} ");             //Sends the command on UART port
                 }
                 Debug.WriteLine("\n");
             }
@@ -186,8 +184,8 @@ namespace Projet5e_PosteDeComande
 
                 foreach (byte b in cTrameOut)
                 {
-                    Debug.Write($"{b:x2} ");               //Writes Data to Visual Studio Output window (for debug purposes)
-                    //Sends the command on UART port
+                    Debug.Write($"{b:x2} ");                //Writes Data to Visual Studio Output window (for debug purposes)
+                    uartPort.Write($"{b:x2} ");             //Sends the command on UART port
                 }
                 Debug.WriteLine("\n");
             }
@@ -199,7 +197,6 @@ namespace Projet5e_PosteDeComande
                 if (uartPort.BytesToRead >= 10)          // Only process data when available
                 {
                     uartPort.Read(cTrameIn, 0, 10);      // Read up to 10 bytes from the serial port
-
                     if (cTrameIn[0] == 0x24)             // Check if the first byte is '$' (0x24 in ASCII)
                     {
                         byte checksum = 0;
@@ -258,9 +255,7 @@ namespace Projet5e_PosteDeComande
             Arreter_Button.Enabled = true;          //Activation du bouton pour arreter l'usine
             Connecter_Button.Enabled = false;       //Desactivation de l'option de deconnecter le port UART
             callingFunction = "Demarrer";           //Garde le nom de la fonction qui a appelé l'envoi de la trame
-            //Mettre dans la trame ce que l'on veut envoyer
             EnvoiDeLaTrame();
-            //Reset de la trame pour la prochaine utilisation
             Demarrer_Button.Enabled = false;        //Desactivation du bouton Demarrer
         }
         private void Arreter_Button_Click(object sender, EventArgs e)
@@ -268,9 +263,7 @@ namespace Projet5e_PosteDeComande
             Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
             Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
             callingFunction = "Arreter";            //Garde le nom de la fonction qui a appelé l'envoi de la trame
-            //Mettre dans la trame ce que l'on veut envoyer
             EnvoiDeLaTrame();
-            //Reset de la trame pour la prochaine utilisation
             Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
         }
 
