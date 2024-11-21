@@ -30,6 +30,8 @@ unsigned char UARTFrameIn[10];	// Frame for data incoming from PC app
 unsigned char UARTFrameOut[10]; // Frame for data going to PC app
 unsigned char i = 0;			// Variable for temporary use
 int nbytes;						// Number of bytes either sent or received from the CAN interface
+unsigned char ucCheckSum = 0; 	// Temporary variable to be used to calculate checksum
+
 
 int uart_fd = -1; // File descriptor for UART communication
 
@@ -69,6 +71,7 @@ int InitCan(int argc, char *argv[]) // char **argv
 		perror("Bind");
 		return -1;
 	}
+	return 0;
 }
 
 int CloseCan()
@@ -135,8 +138,6 @@ int ReceiveCAN()
 		perror("Read"); // If received data is negative amount of bytes
 		return -1;		// Return wit hvalue -1 and displays reading error
 	}
-
-	unsigned char ucCheckSum;					 // Variable dans laquelle sera calculé le checksum de la trame CAN recue
 	for (i = 0; i < CAN_BUFFER_SIZE; i++)		 //
 	{											 //
 		ucCheckSum = ucCheckSum + frame.data[i]; // Calcul du CheckSum
@@ -150,15 +151,13 @@ int ReceiveCAN()
 			printf("%02X", UARTFrameOut[i]);	   // Printf des valeurs pour dégogage
 		} //
 		printf("\n"); //
-
-		TransmitUART(); // Transmission de la trame recue vers le port UART (apli PC)
 	}
 }
 
 int TransmitCAN()
 {
 	i = 0;
-	for (i = 0; i <= CAN_BUFFER_SIZE; i++) // Reset frame data
+	for (i = 0; i < CAN_BUFFER_SIZE; i++) // Reset frame data
 	{
 		frame.data[i] = 0x00;
 	}
@@ -180,6 +179,68 @@ int TransmitCAN()
 		perror("Write"); // Error management
 		return -1;		 // If error, return with error code -1
 	}
+}
+
+void ReceiveUART(int signo)
+{
+    int bytes_available = 0;
+
+    // Check how many bytes are available in the UART receive buffer
+    if (ioctl(uart_fd, FIONREAD, &bytes_available) < 0)
+    {
+        perror("Failed to check bytes available");
+        return;
+    }
+
+    // If exactly 10 bytes are available, read them into UARTFrameIn
+    if (bytes_available >= UART_BUFFER_SIZE)
+    {
+        int bytes_read = read(uart_fd, UARTFrameIn, UART_BUFFER_SIZE);
+
+        if (bytes_read == UART_BUFFER_SIZE)
+        {
+            printf("10 bytes received from UART: ");
+            for (i = 0; i < UART_BUFFER_SIZE; i++)
+            {
+                printf("0x%02X ", UARTFrameIn[i]);
+            }
+            printf("\n");
+
+            // Verify checksum
+            for (i = 2; i < UART_BUFFER_SIZE - 1; i++) // Sum bytes 2 to 8
+            {
+                ucCheckSum += UARTFrameIn[i];
+            }
+
+            if (ucCheckSum == UARTFrameIn[UART_BUFFER_SIZE - 1]) // Compare with last byte (checksum byte)
+            {
+                printf("Checksum verified successfully!\n");
+
+                // Process the valid frame (copy to UARTFrameOut, send to CAN, etc.)
+                memcpy(UARTFrameOut, UARTFrameIn, UART_BUFFER_SIZE); // Example of copying valid data
+            }
+            else
+            {
+                printf("Checksum mismatch! Calculated: 0x%02X, Received: 0x%02X\n",
+                       ucCheckSum, UARTFrameIn[UART_BUFFER_SIZE - 1]);
+            }
+        }
+        else
+        {
+            printf("Error reading data: expected %d bytes, got %d bytes\n", UART_BUFFER_SIZE, bytes_read);
+        }
+
+        // Clear any extra bytes in the buffer
+        if (bytes_available > UART_BUFFER_SIZE)
+        {
+            char temp[256];
+            read(uart_fd, temp, bytes_available - UART_BUFFER_SIZE);
+        }
+    }
+    else
+    {
+        printf("Not enough data yet: %d bytes available\n", bytes_available);
+    }
 }
 
 int enable_uart_interrupt(int uart_fd)
@@ -209,50 +270,6 @@ int enable_uart_interrupt(int uart_fd)
 	return 0; // Success
 }
 
-int ReceiveUART()
-{
-	int bytes_available = 0;
-
-	// Check how many bytes are available in the UART receive buffer
-	if (ioctl(uart_fd, FIONREAD, &bytes_available) < 0)
-	{
-		perror("Failed to check bytes available");
-		return -1;
-	}
-
-	// If exactly 10 bytes are available, read them into UARTFrameIn
-	if (bytes_available >= UART_BUFFER_SIZE)
-	{
-		int bytes_read = read(uart_fd, UARTFrameIn, UART_BUFFER_SIZE);
-
-		if (bytes_read == UART_BUFFER_SIZE)
-		{
-			printf("10 bytes received from UART: ");
-			for (i = 0; i < UART_BUFFER_SIZE; i++)
-			{
-				printf("0x%02X ", UARTFrameIn[i]);
-			}
-			printf("\n");
-		}
-		else
-		{
-			printf("Error reading data: expected %d bytes, got %d bytes\n", UART_BUFFER_SIZE, bytes_read);
-		}
-
-		// Clear any extra bytes in the buffer
-		if (bytes_available > UART_BUFFER_SIZE)
-		{
-			char temp[256];
-			read(uart_fd, temp, bytes_available - UART_BUFFER_SIZE);
-		}
-	}
-	else
-	{
-		printf("Not enough data yet: %d bytes available\n", bytes_available);
-	}
-	return 0;
-}
-
 int TransmitUART()
 {
 	UARTFrameOut[0] = 0x24;													// Start Condition de la trame UART ('$' en hexadecimal)
@@ -267,7 +284,7 @@ int TransmitUART()
 	} //
 	printf("\n");
 
-	for (i = 0; i > UART_BUFFER_SIZE; i++) // Reset value for UARTFrameOut
+	for (i = 0; i < UART_BUFFER_SIZE; i++) // Reset value for UARTFrameOut
 	{
 		UARTFrameOut[i] = 0x00;
 	}
