@@ -166,12 +166,12 @@ int TransmitCAN()
 
 	memcpy(frame.data, (UARTFrameIn+2), CAN_BUFFER_SIZE); // Copy UART received data to CAN frame
 
-	printf("Sending CAN frame:\n");									   // Outputs what has been sent
-	printf("ID: 0x%03X, DLC: %d, Data:", frame.can_id, frame.can_dlc); // to VsCode's debug window
-	for (i = 0; i < frame.can_dlc; i++)								   //
-	{																   //
-		printf(" 0x%02X", frame.data[i]);							   //
-	} //
+	printf("Sending CAN frame:\n");									   	// Outputs what has been sent
+	printf("ID: 0x%03X, DLC: %d, Data:", frame.can_id, frame.can_dlc); 	// to VsCode's debug window
+	for (i = 0; i < frame.can_dlc; i++)								   	//
+	{																   	//
+		printf(" 0x%02X", frame.data[i]);							   	//
+	} 																	//
 	printf("\n"); // Skips a line
 
 	if (write(fdSocketCAN, &frame, sizeof(struct can_frame)) != sizeof(struct can_frame)) // Write data in fdSocketCan to the CAN bus
@@ -183,6 +183,7 @@ int TransmitCAN()
 
 int ReceiveUART()
 {
+	
 }
 
 int TransmitUART()
