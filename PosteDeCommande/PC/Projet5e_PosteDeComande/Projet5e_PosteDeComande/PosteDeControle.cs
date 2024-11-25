@@ -198,7 +198,7 @@ namespace Projet5e_PosteDeComande
             {
                 if (uartPort.BytesToRead >= 10)          // Only process data when available
                 {
-                    Array.Clear(cTrameIn, 0, cTrameOut.Length);
+                    Array.Clear(cTrameIn, 0, cTrameOut.Length);     //Clear frame data before attempting to read
                     uartPort.Read(cTrameIn, 0, 10);      // Read up to 10 bytes from the serial port
 
                     foreach (byte b in cTrameIn)
