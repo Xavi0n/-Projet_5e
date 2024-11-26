@@ -44,6 +44,9 @@ namespace Projet5e_PosteDeComande
             uartPort = new SerialPort();
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
             uartPort.DataReceived += ReceptionDeLaTrame;            // Register the DataReceived event handler
+            Grams_Checkbox.Checked = true;
+            Array.Clear(cTrameOut, 0, cTrameOut.Length);
+            Array.Clear(cTrameIn, 0, cTrameOut.Length);
         }
 
         private void PopulateCOMPorts()
@@ -54,12 +57,10 @@ namespace Projet5e_PosteDeComande
                 COMPorts_comboBox.SelectedIndex = 0; // Select the first port by default
             }
         }
-
         private void Form1_Load(object sender, EventArgs e)
         {
 
         }
-        
         private void AjustementPositionVehicule()
         {
             switch (currentState)
@@ -92,10 +93,16 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementDuPoids()
         {
-            double dGramsToOunces = 28.3495;
-            string hexString = cTrameIn[4].ToString();      //Convertir la valeur hexa de la trame en valeur
-            string cleanHex = hexString.Substring(2);       //décimale qui contient les mêmes termes (ex: 0x34 -> 34)
-            dPoidsRondelle = float.Parse(cleanHex, System.Globalization.NumberStyles.Number);
+            double dGramsToOunces = 28.3495;            //Valeur de conversion grammes / onces
+
+            //string ToConvert = cTrameIn[4].ToString();
+            //ToConvert += ".";
+            //ToConvert += cTrameIn[5].ToString();
+            //string Converted = ToConvert.Substring(2);
+            //dPoidsRondelle = Convered;
+
+            //dPoidsRondelle = Convert.ToDouble(cTrameIn[4]);
+            //dPoidsRondelle = dPoidsRondelle + Convert.ToDouble(((cTrameIn[5])/100));
 
             if (Ounces_Checkbox.Checked == true)        //Convertir le poids de grammes a onces si 
             {                                           //la case onces est cochée sur l'interface
@@ -134,62 +141,55 @@ namespace Projet5e_PosteDeComande
                 CouleurNonDefinie_Label.Visible = true;
             }
         }
-
         private void EnvoiDeLaTrame()
         {
-            if (callingFunction == "Demarrer")
+            if (callingFunction == "Demarrer" || callingFunction == "Arreter")
             {
-                // Assign values in hexadecimal format
-                cTrameOut[0] = 0x24; // '$' in ASCII (hexadecimal: 0x24)    //Start condition
-                cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            //Amount of bytes to be transmitted
-                cTrameOut[2] = 0x01; // Decimal 1 in hexadecimal            //Identifier for control post
-                cTrameOut[3] = 0x44; // Decimal D in hexadecimal            //Command ('D' is for Starting the factory)
-                cTrameOut[4] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[5] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[6] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[7] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[8] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                                                                            //
-                byte checksum = 0x00; // Reset checksum byte                //
-                for (int i = 0; i < 9; i++) // Calculate checksum           //
-                {                                                           //
-                    checksum += cTrameOut[i];                               //
-                }                                                           //
-                cTrameOut[9] = checksum;                                    //Checksum
+                // Disable the DataReceived event temporarily
+                uartPort.DataReceived -= ReceptionDeLaTrame;
 
-                foreach (byte b in cTrameOut)           
+                // Prepare the data frame based on the command
+                if (callingFunction == "Demarrer")
                 {
-                    Debug.Write($"{b:x2} ");               //Writes Data to Visual Studio Output window (for debug purposes)
-                    //Sends the command on UART port
+                    cTrameOut[0] = 0x24; // '$' in ASCII (hexadecimal: 0x24)    // Start condition
+                    cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            // Amount of bytes to be transmitted
+                    cTrameOut[2] = 0x10; // Decimal 10 in hexadecimal           // Identifier for control post
+                    cTrameOut[3] = 0x44; // Decimal D in hexadecimal            // Command ('D' is for starting the factory)
+                    cTrameOut[4] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[5] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[6] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[7] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[8] = 0x00; // 0 in hexadeciamal                   // Empty data
                 }
-                Debug.WriteLine("\n");
-            }
-            else if (callingFunction == "Arreter")
-            {
-                // Assign values in hexadecimal format
-                cTrameOut[0] = 0x24; // '$' in ASCII (hexadecimal: 0x24)    //Start condition
-                cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            //Amount of bytes to be transmitted
-                cTrameOut[2] = 0x01; // Decimal 1 in hexadecimal            //Identifier for control post
-                cTrameOut[3] = 0x41; // Decimal A in hexadecimal            //Command ('A' is for stopping the factory)
-                cTrameOut[4] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[5] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[6] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[7] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                cTrameOut[8] = 0x00; // Decimal 0 in hexadecimal            //Not used for Start/Stop commands
-                                     //
-                byte checksum = 0x00; // Reset checksum byte                //
-                for (int i = 0; i < 9; i++) // Calculate checksum           //
-                {                                                           //
-                    checksum += cTrameOut[i];                               //
-                }                                                           //
-                cTrameOut[9] = checksum;                                    //Checksum
+                else if (callingFunction == "Arreter")
+                {
+                    cTrameOut[0] = 0x24; // '$' in ASCII
+                    cTrameOut[1] = 0x08; // Amount of bytes
+                    cTrameOut[2] = 0x10; // Decimal 10 in hexadecimal           // Identifier for control post
+                    cTrameOut[3] = 0x41; // Command ('A' for stop)
+                    cTrameOut[4] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[5] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[6] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[7] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[8] = 0x00; // 0 in hexadeciamal                   // Empty data
+                }
+                byte checksum = 0x00;
+                for (int i = 0; i <= 9; i++) // Calculate checksum
+                {
+                    checksum += cTrameOut[i];
+                }
+                cTrameOut[9] = checksum; // Store checksum
 
+                // Send the data frame over UART
                 foreach (byte b in cTrameOut)
                 {
-                    Debug.Write($"{b:x2} ");               //Writes Data to Visual Studio Output window (for debug purposes)
-                    //Sends the command on UART port
+                    Debug.Write($"{b:x2} ");                    // Debugging output
+                    uartPort.Write(new byte[] { b }, 0, 1);     // Send byte by byte
                 }
                 Debug.WriteLine("\n");
+                Array.Clear(cTrameOut, 0, cTrameOut.Length);
+                // Re-enable the DataReceived event after the data is sent
+                uartPort.DataReceived += ReceptionDeLaTrame;
             }
         }
         private void ReceptionDeLaTrame(object sender, SerialDataReceivedEventArgs e)
@@ -198,7 +198,14 @@ namespace Projet5e_PosteDeComande
             {
                 if (uartPort.BytesToRead >= 10)          // Only process data when available
                 {
+                    Array.Clear(cTrameIn, 0, cTrameOut.Length);     //Clear frame data before attempting to read
                     uartPort.Read(cTrameIn, 0, 10);      // Read up to 10 bytes from the serial port
+
+                    foreach (byte b in cTrameIn)
+                    {
+                        Debug.Write($"{b:x2} ");
+                    }
+                    Debug.WriteLine("\n");
 
                     if (cTrameIn[0] == 0x24)             // Check if the first byte is '$' (0x24 in ASCII)
                     {
@@ -234,7 +241,6 @@ namespace Projet5e_PosteDeComande
                 MessageBox.Show($"Error receiving data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
         private void Connecter_Button_Click(object sender, EventArgs e)
         {
             if (Connecter_Button.Text == "Connecter")           //Si l'utilisateur désire se connecter
@@ -252,15 +258,12 @@ namespace Projet5e_PosteDeComande
                 CloseUART();
             }
         }
-
         private void Demarrer_Button_Click(object sender, EventArgs e)
         {
             Arreter_Button.Enabled = true;          //Activation du bouton pour arreter l'usine
             Connecter_Button.Enabled = false;       //Desactivation de l'option de deconnecter le port UART
             callingFunction = "Demarrer";           //Garde le nom de la fonction qui a appelé l'envoi de la trame
-            //Mettre dans la trame ce que l'on veut envoyer
             EnvoiDeLaTrame();
-            //Reset de la trame pour la prochaine utilisation
             Demarrer_Button.Enabled = false;        //Desactivation du bouton Demarrer
         }
         private void Arreter_Button_Click(object sender, EventArgs e)
@@ -268,20 +271,11 @@ namespace Projet5e_PosteDeComande
             Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
             Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
             callingFunction = "Arreter";            //Garde le nom de la fonction qui a appelé l'envoi de la trame
-            //Mettre dans la trame ce que l'on veut envoyer
             EnvoiDeLaTrame();
-            //Reset de la trame pour la prochaine utilisation
             Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
         }
-
         private void InitUART()
         {
-            if (COMPorts_comboBox.SelectedItem == null)     // Check if a COM port is selected
-            {
-                MessageBox.Show("Please select a COM port.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
             selectedPort = COMPorts_comboBox.SelectedItem.ToString();    // Get the selected COM port
 
             if (uartPort.IsOpen)    {uartPort.Close();}    // Close the port if it's already open
@@ -294,7 +288,9 @@ namespace Projet5e_PosteDeComande
                 uartPort.StopBits = StopBits.One;       //One stop bit
                 uartPort.DataBits = 8;                  //8 bit structure
                 uartPort.Handshake = Handshake.None;    //No handshake
+                
                 uartPort.Open();                        //Open the port
+                uartPort.DiscardInBuffer();             //Clear UART buffer
                 MessageBox.Show($"Successfully opened {selectedPort}!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch (Exception ex)
@@ -317,19 +313,16 @@ namespace Projet5e_PosteDeComande
                 }
             }
         }
-
         private void Ounces_Checkbox_Click(object sender, EventArgs e)
         {
             Ounces_Checkbox.Checked = true;
             Grams_Checkbox.Checked = false;
         }
-
         private void Grams_Checkbox_Click(object sender, EventArgs e)
         {
             Grams_Checkbox.Checked = true;
             Ounces_Checkbox.Checked= false;
         }
-
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (uartPort.IsOpen)
