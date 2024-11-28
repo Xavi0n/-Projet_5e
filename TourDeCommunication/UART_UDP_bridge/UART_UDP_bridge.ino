@@ -6,16 +6,16 @@
 #define BOUTON 14
 
 #define UDP_PACKET_SIZE 8
-#define UART_PACKET_SIZE 10
+#define UART_PACKET_SIZE 11
 #define UART_START_CONDITION 0x24
 #define CONTROL_TOWER_ID 0x03
 
 //NETWORK CREDENTIALS
 const char* SsidAP = "TourDeComEquipe3";
 const char* PasswordAP = "TourDeComEquipe3";
-const char* LocalIpAP = "192.168.27.1 ";
-const char* GatewayAP = "192.168.27.1";  // Même que l'addresse IP, c'est voulu
-const char* SubnetAP = "255.255.255.0";
+IPAddress LocalIpAP(192, 168, 27, 1);
+IPAddress GatewayAP(192, 168, 27, 1);  // Même que l'addresse IP, c'est voulu
+IPAddress SubnetAP(255, 255, 255, 0);
 
 //UDP related variables
 WiFiUDP udp;
@@ -39,7 +39,7 @@ void setup() {
   Serial.begin(115200);
 
   //Start serial communication port with STM32 (via UART1, for data communication)
-  STMSerial.begin(115200, SERIAL_8N1, 16, 17);                // Baud rate, data bits, Rx pin (GPIO16), Tx pin (GPIO17)
+  STMSerial.begin(19200, SERIAL_8N1, 16, 17);                 // Baud rate, data bits, Rx pin (GPIO16), Tx pin (GPIO17)
   Serial.println("Serial Communication with STM32 started");  // Start indicator on debug serial port
 
   //INITIALISATIONS DES GPIO
@@ -48,22 +48,16 @@ void setup() {
 
   //CONNEXION AU WIFI EN MODE ACCESS POINT
   WiFi.mode(WIFI_AP);
-  WiFi.softAP(SsidAP, PasswordAP);
-  delay(100);
-  WiFi.softAPConfig(LocalIpAP, GatewayAP, SubnetAP);
-  Serial.print("Soft-AP IP address = ");
-  Serial.println(WiFi.softAPIP());
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.println("...");
+  if (WiFi.softAP(SsidAP, PasswordAP)) {
+    Serial.println("Soft-AP started successfully.");
+    WiFi.softAPConfig(LocalIpAP, GatewayAP, SubnetAP);
+    Serial.print("Soft-AP IP address: ");
+    Serial.println(WiFi.softAPIP());
+  } else {
+    Serial.println("Failed to start Soft-AP.");
+    while (true)
+      ;  // Halt if starting the SoftAP fails
   }
-
-  //UNE FOIS CONNECTE, ECRIRE SUR LA CONSOLE L'ADDRESSE IP
-  Serial.println("");
-  Serial.println("Connecte au reseau");
-  Serial.print("Addresse de l'ESP32: ");
-  Serial.println(WiFi.localIP());
 
   // Start UDP and listen on esp32ListenPort
   udp.begin(ListenPort);
@@ -121,40 +115,50 @@ void WriteUDP() {
 }
 
 void ReadUART() {
-  static unsigned long UARTlastTime = 0;  // Stores the last time the function executed
+  static unsigned long UARTlastTime = 0;
   unsigned long UARTcurrentTime = millis();
 
-  // Execute only if 100 millisecond have been elapsed
   if (UARTcurrentTime - UARTlastTime >= 100) {
-    UARTlastTime = UARTcurrentTime;  // Update the last execution time
+    UARTlastTime = UARTcurrentTime;
 
-    if (STMSerial.available() == UART_PACKET_SIZE) {  // Check if expected amount of bytes has been received
-      for (i = 0; i < UART_PACKET_SIZE; i++) {
-        UARTFrameIN[i] = STMSerial.read();  // Read each received byte to UART incoming frame buffer
+    int availableBytes = STMSerial.available();
+    if (availableBytes > 0) {
+      Serial.print("Bytes in buffer: ");
+      Serial.println(availableBytes);
+    }
+
+    if (availableBytes >= UART_PACKET_SIZE) {  // Process only if full frame is available
+      Serial.println("Processing UART Frame...");
+      for (int i = 0; i < UART_PACKET_SIZE; i++) {
+        UARTFrameIN[i] = STMSerial.read();
         Serial.print("Byte ");
         Serial.print(i);
         Serial.print(": ");
-        Serial.println(UARTFrameIN[i], HEX);  // Print each received byte in hexadecimal format
+        Serial.println(UARTFrameIN[i], HEX);
       }
-      if (UARTFrameIN[0] == UART_START_CONDITION) {  // Process data only if first byte is expected UART frame start condition
-        ucCheckSum = 0;                              // Reset CheckSum value to ensure it is calculated correctly each time
-        for (i = 2; i < (UART_PACKET_SIZE - 1); i++) {
-          ucCheckSum += UARTFrameIN[i];  // Accumulates the received CheckSum
+
+      if (UARTFrameIN[0] == UART_START_CONDITION) {
+        uint8_t ucCheckSum = 0;
+        for (int i = 2; i < (UART_PACKET_SIZE - 1); i++) {
+          ucCheckSum += UARTFrameIN[i];
         }
-        if (ucCheckSum == UARTFrameIN[UART_PACKET_SIZE - 1]) {  // Check if calculated checksum matches with received checksum
-          for (i = 0; i < UDP_PACKET_SIZE; i++) {               // Copy received UART frame minus start condition, amount of bytes and checksum
+
+        if (ucCheckSum == UARTFrameIN[UART_PACKET_SIZE - 1]) {
+          Serial.println("Checksum validated. Data copied to UDP.");
+          for (int i = 0; i < UDP_PACKET_SIZE; i++) {
             outgoingPacket[i] = UARTFrameIN[i + 2];
           }
-          Serial.println("Received UART data, copied to outgoing UDP packet successfully");
           WriteUDP();
         } else {
-          Serial.println("Warning: Received UART CheckSum does not match calculated CheckSum");
+          Serial.println("Checksum mismatch.");
         }
       } else {
-        Serial.println("Warning: Received UART start condition does not match expected start condition");
+        Serial.println("Invalid start condition.");
       }
+    } else if (availableBytes > 0) {
+      Serial.println("Partial frame received. Waiting for more data...");
     } else {
-      Serial.println("Warning: Received UART frame size does not match expected size");
+      Serial.println("No data available.");
     }
   }
 }
