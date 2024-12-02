@@ -13,8 +13,8 @@
 //NETWORK CREDENTIALS
 const char* SsidAP = "TourDeComEquipe3";
 const char* PasswordAP = "TourDeComEquipe3";
-IPAddress LocalIpAP(192, 168, 27, 1);
-IPAddress GatewayAP(192, 168, 27, 1);  // Même que l'addresse IP, c'est voulu
+IPAddress LocalIpAP(192, 168, 1, 1);
+IPAddress GatewayAP(192, 168, 1, 1);  // Même que l'addresse IP, c'est voulu
 IPAddress SubnetAP(255, 255, 255, 0);
 
 //UDP related variables
