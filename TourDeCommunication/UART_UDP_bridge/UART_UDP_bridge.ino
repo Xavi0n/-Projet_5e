@@ -19,7 +19,7 @@ IPAddress SubnetAP(255, 255, 255, 0);
 
 //UDP related variables
 WiFiUDP udp;
-unsigned int ListenPort = 10024;          // ESP32 listens here
+unsigned int ListenPort = 10025;          // ESP32 listens here
 unsigned int VehiclePort = 10024;         // Send to Vehicle's listening port
 const char* VehicleIP = "192.168.1.127";  //
 char incomingPacket[255];                 // Buffer for incoming packets
