@@ -1,0 +1,716 @@
+###############################################################################
+#
+# IAR ELF Linker V7.80.2.11947/W32 for ARM                25/Oct/2022  13:44:29
+# Copyright 2007-2016 IAR Systems AB.
+#
+#    Output file  =  
+#        C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Exe\247-637 S-0010 V7.out
+#    Map file     =  
+#        C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\List\247-637 S-0010 V7.map
+#    Command line =  
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\interfaceB1.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\interfaceS0008.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\interfaceT1.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\interfaceT2.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\interfaceT3.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\interfaceT4.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\main.o" "C:\Users\yproy\OneDrive -
+#        Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteCAN1.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteIOB1.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteIOT1.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteIOT2.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteIOT3.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteIOT4.o" "C:\Users\yproy\OneDrive
+#        - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\piloteTimer6Up.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\piloteUSART2.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\processusBoutonConnecte.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\processusClignotant.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\serviceBaseDeTemps.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\serviceProtocole637.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\startup_stm32f407xx.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_can.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_cortex.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_dma.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_dma_ex.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_exti.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_flash.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_flash_ex.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_flash_ramfunc.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_gpio.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_msp.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_pwr.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_pwr_ex.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_rcc.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_rcc_ex.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_tim.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_hal_tim_ex.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\stm32f4xx_hal_uart.o"
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Obj\stm32f4xx_it.o" "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\Obj\system_stm32f4xx.o" --redirect
+#        _Printf=_PrintfFull --redirect _Scanf=_ScanfFull -o
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010
+#        V7\Exe\247-637 S-0010 V7.out" --map "C:\Users\yproy\OneDrive - Cégep
+#        Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010
+#        V7\EWARM\247-637 S-0010 V7\List\247-637 S-0010 V7.map" --config
+#        "C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08
+#        247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM/stm32f407xx_flash.icf"
+#        --semihosting --entry __iar_program_start --vfe
+#
+###############################################################################
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor       = *
+__SystemLibrary = DLib
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at 0x08000000 { ro section .intvec };
+"P1":  place in [from 0x08000000 to 0x080fffff] { ro };
+"P2":  place in [from 0x20000000 to 0x2001ffff] { rw, block CSTACK, block HEAP };
+initialize by copy { rw };
+
+  Section            Kind        Address    Size  Object
+  -------            ----        -------    ----  ------
+"A0":                                      0x188
+  .intvec            ro code  0x08000000   0x188  startup_stm32f407xx.o [1]
+                            - 0x08000188   0x188
+
+"P1":                                     0x2560
+  .text              ro code  0x08000188   0x494  stm32f4xx_hal_can.o [1]
+  .text              ro code  0x0800061c   0x154  stm32f4xx_hal_msp.o [1]
+  .text              ro code  0x08000770     0xc  stm32f4xx_hal.o [1]
+  .text              ro code  0x0800077c    0xf0  stm32f4xx_hal_cortex.o [1]
+  .text              ro code  0x0800086c     0x6  ABImemclr4.o [5]
+  .text              ro code  0x08000874   0x1ec  stm32f4xx_hal_gpio.o [1]
+  .text              ro code  0x08000a60    0x32  ABImemset48.o [5]
+  .text              ro code  0x08000a94   0x47c  main.o [1]
+  .text              ro code  0x08000f10    0x28  piloteTimer6Up.o [1]
+  .text              ro code  0x08000f38    0x48  piloteUSART2.o [1]
+  .text              ro code  0x08000f80     0xe  piloteIOB1.o [1]
+  .text              ro code  0x08000f90    0x1c  piloteIOT1.o [1]
+  .text              ro code  0x08000fac    0x1c  piloteIOT2.o [1]
+  .text              ro code  0x08000fc8    0x1c  piloteIOT3.o [1]
+  .text              ro code  0x08000fe4    0x1c  piloteIOT4.o [1]
+  .text              ro code  0x08001000    0x48  serviceBaseDeTemps.o [1]
+  .text              ro code  0x08001048   0x354  serviceProtocole637.o [1]
+  .text              ro code  0x0800139c    0x70  interfaceB1.o [1]
+  .text              ro code  0x0800140c    0x12  interfaceT1.o [1]
+  .text              ro code  0x0800141e    0x12  interfaceT2.o [1]
+  .text              ro code  0x08001430    0x12  interfaceT3.o [1]
+  .text              ro code  0x08001442    0x12  interfaceT4.o [1]
+  .text              ro code  0x08001454    0xcc  interfaceS0008.o [1]
+  .text              ro code  0x08001520    0xc8  processusClignotant.o [1]
+  .text              ro code  0x080015e8   0x17c  processusBoutonConnecte.o [1]
+  .text              ro code  0x08001764    0x94  piloteCAN1.o [1]
+  .text              ro code  0x080017f8    0x34  stm32f4xx_hal.o [1]
+  .text              ro code  0x0800182c   0x2f4  stm32f4xx_hal_rcc.o [1]
+  .text              ro code  0x08001b20   0x1bc  stm32f4xx_hal_rcc.o [1]
+  .text              ro code  0x08001cdc   0x278  stm32f4xx_hal_tim.o [1]
+  .text              ro code  0x08001f54    0x40  stm32f4xx_hal_tim_ex.o [1]
+  .text              ro code  0x08001f94   0x2d8  stm32f4xx_hal_uart.o [1]
+  .text              ro code  0x0800226c    0x48  stm32f4xx_hal.o [1]
+  .text              ro code  0x080022b4    0xee  I64DivMod.o [5]
+  .text              ro code  0x080023a2     0x2  stm32f4xx_hal_tim.o [1]
+  .text              ro code  0x080023a4     0x2  stm32f4xx_hal_tim.o [1]
+  .text              ro code  0x080023a6     0x2  stm32f4xx_hal_tim.o [1]
+  .text              ro code  0x080023a8     0x2  stm32f4xx_hal_tim_ex.o [1]
+  .text              ro code  0x080023aa     0x2  stm32f4xx_hal_tim.o [1]
+  .text              ro code  0x080023ac     0x2  stm32f4xx_hal_tim_ex.o [1]
+  .text              ro code  0x080023b0     0x2  I64DivZer.o [5]
+  .text              ro code  0x080023b4    0x60  system_stm32f4xx.o [1]
+  .text              ro code  0x08002414    0x40  zero_init3.o [5]
+  .text              ro code  0x08002454    0x2c  copy_init3.o [5]
+  .text              ro code  0x08002480    0x28  data_init.o [5]
+  .text              ro code  0x080024a8    0x22  fpinit_M.o [4]
+  .iar.init_table    const    0x080024cc    0x24  - Linker created -
+  .text              ro code  0x080024f0    0x1a  cmain.o [5]
+  .text              ro code  0x0800250a     0x4  low_level_init.o [3]
+  .text              ro code  0x0800250e     0x4  exit.o [3]
+  .text              ro code  0x08002514     0xa  cexit.o [5]
+  .text              ro code  0x08002520    0x14  exit.o [6]
+  .text              ro code  0x08002534    0x10  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002544    0x10  stm32f4xx_hal.o [1]
+  .text              ro code  0x08002554    0x10  stm32f4xx_it.o [1]
+  Initializer bytes  const    0x08002564    0x10  <for P2-1>
+  .text              ro code  0x08002574     0xc  cstartup_M.o [5]
+  .rodata            const    0x08002580     0x8  system_stm32f4xx.o [1]
+  .text              ro code  0x08002588     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800258c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002590     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002594     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002598     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800259c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025a0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025a4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025a8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025ac     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025b0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025b4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025b8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025bc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025c0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025c4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025c8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025cc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025d0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025d4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025d8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025dc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025e0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025e4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025e8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025ec     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025f0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025f4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025f8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080025fc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002600     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002604     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002608     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800260c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002610     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002614     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002618     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800261c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002620     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002624     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002628     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800262c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002630     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002634     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002638     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800263c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002640     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002644     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002648     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800264c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002650     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002654     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002658     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800265c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002660     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002664     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002668     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800266c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002670     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002674     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002678     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800267c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002680     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002684     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002688     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800268c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002690     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002694     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x08002698     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x0800269c     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026a0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026a4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026a8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026ac     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026b0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026b4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026b8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026bc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026c0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026c4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026c8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026cc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026d0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026d4     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026d8     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026dc     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026e0     0x4  startup_stm32f407xx.o [1]
+  .text              ro code  0x080026e4     0x4  startup_stm32f407xx.o [1]
+  .rodata            const    0x080026e8     0x0  zero_init3.o [5]
+  .rodata            const    0x080026e8     0x0  copy_init3.o [5]
+                            - 0x080026e8  0x2560
+
+"P2", part 1 of 3:                          0x10
+  P2-1                        0x20000000    0x10  <Init block>
+    .data            inited   0x20000000     0xc  stm32f4xx_hal.o [1]
+    .data            inited   0x2000000c     0x4  system_stm32f4xx.o [1]
+                            - 0x20000010    0x10
+
+"P2", part 2 of 3:                         0x400
+  CSTACK                      0x20000010   0x400  <Block>
+    CSTACK           uninit   0x20000010   0x400  <Block tail>
+                            - 0x20000410   0x400
+
+"P2", part 3 of 3:                         0x190
+  .bss               zero     0x20000410    0x44  piloteCAN1.o [1]
+  .bss               zero     0x20000454    0x40  main.o [1]
+  .bss               zero     0x20000494    0x40  main.o [1]
+  .bss               zero     0x200004d4    0x28  main.o [1]
+  .bss               zero     0x200004fc    0x28  serviceProtocole637.o [1]
+  .bss               zero     0x20000524    0x1c  piloteCAN1.o [1]
+  .bss               zero     0x20000540    0x1c  serviceBaseDeTemps.o [1]
+  .bss               zero     0x2000055c    0x14  processusClignotant.o [1]
+  .bss               zero     0x20000570     0xc  interfaceB1.o [1]
+  .bss               zero     0x2000057c     0xc  interfaceS0008.o [1]
+  .bss               zero     0x20000588     0xc  processusBoutonConnecte.o [1]
+  .bss               zero     0x20000594     0x4  piloteTimer6Up.o [1]
+  .bss               zero     0x20000598     0x4  serviceProtocole637.o [1]
+  .bss               zero     0x2000059c     0x2  serviceProtocole637.o [1]
+  .bss               zero     0x2000059e     0x2  serviceProtocole637.o [1]
+                            - 0x200005a0   0x190
+
+
+*******************************************************************************
+*** INIT TABLE
+***
+
+          Address     Size
+          -------     ----
+Zero (__iar_zero_init3)
+    1 destination range, total size 0x190:
+          0x20000410  0x190
+
+Copy (__iar_copy_init3)
+    1 source range, total size 0x10:
+          0x08002564   0x10
+    1 destination range, total size 0x10:
+          0x20000000   0x10
+
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module                     ro code  ro data  rw data
+    ------                     -------  -------  -------
+C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010 V7\Obj: [1]
+    interfaceB1.o                  112                12
+    interfaceS0008.o               204                12
+    interfaceT1.o                   18
+    interfaceT2.o                   18
+    interfaceT3.o                   18
+    interfaceT4.o                   18
+    main.o                       1 148               168
+    piloteCAN1.o                   148                96
+    piloteIOB1.o                    14
+    piloteIOT1.o                    28
+    piloteIOT2.o                    28
+    piloteIOT3.o                    28
+    piloteIOT4.o                    28
+    piloteTimer6Up.o                40                 4
+    piloteUSART2.o                  72
+    processusBoutonConnecte.o      380                12
+    processusClignotant.o          200                20
+    serviceBaseDeTemps.o            72                28
+    serviceProtocole637.o          852                48
+    startup_stm32f407xx.o          760
+    stm32f4xx_hal.o                152       12       12
+    stm32f4xx_hal_can.o          1 172
+    stm32f4xx_hal_cortex.o         240
+    stm32f4xx_hal_gpio.o           492
+    stm32f4xx_hal_msp.o            340
+    stm32f4xx_hal_rcc.o          1 200
+    stm32f4xx_hal_tim.o            640
+    stm32f4xx_hal_tim_ex.o          68
+    stm32f4xx_hal_uart.o           728
+    stm32f4xx_it.o                  16
+    system_stm32f4xx.o              96       12        4
+    ----------------------------------------------------
+    Total:                       9 330       24      416
+
+command line: [2]
+    ----------------------------------------------------
+    Total:
+
+dl7M_tln.a: [3]
+    exit.o                           4
+    low_level_init.o                 4
+    ----------------------------------------------------
+    Total:                           8
+
+m7M_tls.a: [4]
+    fpinit_M.o                      34
+    ----------------------------------------------------
+    Total:                          34
+
+rt7M_tl.a: [5]
+    ABImemclr4.o                     6
+    ABImemset48.o                   50
+    I64DivMod.o                    238
+    I64DivZer.o                      2
+    cexit.o                         10
+    cmain.o                         26
+    copy_init3.o                    44
+    cstartup_M.o                    12
+    data_init.o                     40
+    zero_init3.o                    64
+    ----------------------------------------------------
+    Total:                         492
+
+shb_l.a: [6]
+    exit.o                          20
+    ----------------------------------------------------
+    Total:                          20
+
+    Gaps                            14        2
+    Linker created                           36    1 024
+--------------------------------------------------------
+    Grand Total:                 9 898       62    1 440
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                      Address   Size  Type      Object
+-----                      -------   ----  ----      ------
+.iar.init_table$$Base   0x080024cc          --   Gb  - Linker created -
+.iar.init_table$$Limit  0x080024f0          --   Gb  - Linker created -
+?main                   0x080024f1         Code  Gb  cmain.o [5]
+AHBPrescTable           0x08002404   0x10  Data  Gb  system_stm32f4xx.o [1]
+APBPrescTable           0x08002580    0x8  Data  Gb  system_stm32f4xx.o [1]
+CSTACK$$Base            0x20000010          --   Gb  - Linker created -
+CSTACK$$Limit           0x20000410          --   Gb  - Linker created -
+Error_Handler           0x08000ed5    0x2  Code  Gb  main.o [1]
+HAL_CAN_AddTxMessage    0x08000409   0xde  Code  Gb  stm32f4xx_hal_can.o [1]
+HAL_CAN_ConfigFilter    0x080002bb   0xec  Code  Gb  stm32f4xx_hal_can.o [1]
+HAL_CAN_GetRxMessage    0x080004e7  0x136  Code  Gb  stm32f4xx_hal_can.o [1]
+HAL_CAN_Init            0x08000189  0x132  Code  Gb  stm32f4xx_hal_can.o [1]
+HAL_CAN_MspInit         0x08000655   0x64  Code  Gb  stm32f4xx_hal_msp.o [1]
+HAL_CAN_Start           0x080003a7   0x58  Code  Gb  stm32f4xx_hal_can.o [1]
+HAL_GPIO_Init           0x08000875  0x1a2  Code  Gb  stm32f4xx_hal_gpio.o [1]
+HAL_GPIO_ReadPin        0x08000a17    0xe  Code  Gb  stm32f4xx_hal_gpio.o [1]
+HAL_GPIO_WritePin       0x08000a25    0xe  Code  Gb  stm32f4xx_hal_gpio.o [1]
+HAL_GetTick             0x08000771    0xc  Code  Wk  stm32f4xx_hal.o [1]
+HAL_IncTick             0x08002545   0x10  Code  Wk  stm32f4xx_hal.o [1]
+HAL_Init                0x080017f9   0x30  Code  Gb  stm32f4xx_hal.o [1]
+HAL_InitTick            0x0800226d   0x48  Code  Wk  stm32f4xx_hal.o [1]
+HAL_MspInit             0x0800061d   0x38  Code  Gb  stm32f4xx_hal_msp.o [1]
+HAL_NVIC_EnableIRQ      0x0800084f    0x2  Code  Gb  stm32f4xx_hal_cortex.o [1]
+HAL_NVIC_SetPriority    0x08000831   0x1e  Code  Gb  stm32f4xx_hal_cortex.o [1]
+HAL_NVIC_SetPriorityGrouping
+                        0x0800082f    0x2  Code  Gb  stm32f4xx_hal_cortex.o [1]
+HAL_RCC_ClockConfig     0x08001b21  0x10e  Code  Gb  stm32f4xx_hal_rcc.o [1]
+HAL_RCC_GetHCLKFreq     0x08001c2f    0x6  Code  Gb  stm32f4xx_hal_rcc.o [1]
+HAL_RCC_GetPCLK1Freq    0x08001c35   0x16  Code  Gb  stm32f4xx_hal_rcc.o [1]
+HAL_RCC_GetPCLK2Freq    0x08001c4b   0x16  Code  Gb  stm32f4xx_hal_rcc.o [1]
+HAL_RCC_GetSysClockFreq
+                        0x08001c79   0x64  Code  Wk  stm32f4xx_hal_rcc.o [1]
+HAL_RCC_OscConfig       0x0800182d  0x2f4  Code  Wk  stm32f4xx_hal_rcc.o [1]
+HAL_SYSTICK_Config      0x08000851    0x2  Code  Gb  stm32f4xx_hal_cortex.o [1]
+HAL_TIMEx_BreakCallback
+                        0x080023a9    0x2  Code  Wk  stm32f4xx_hal_tim_ex.o [1]
+HAL_TIMEx_CommutCallback
+                        0x080023ad    0x2  Code  Wk  stm32f4xx_hal_tim_ex.o [1]
+HAL_TIMEx_MasterConfigSynchronization
+                        0x08001f55   0x40  Code  Gb  stm32f4xx_hal_tim_ex.o [1]
+HAL_TIM_Base_Init       0x08001cdd   0x32  Code  Gb  stm32f4xx_hal_tim.o [1]
+HAL_TIM_Base_MspInit    0x080006b9   0x38  Code  Gb  stm32f4xx_hal_msp.o [1]
+HAL_TIM_Base_Start_IT   0x08001d0f   0x22  Code  Gb  stm32f4xx_hal_tim.o [1]
+HAL_TIM_IC_CaptureCallback
+                        0x080023a3    0x2  Code  Wk  stm32f4xx_hal_tim.o [1]
+HAL_TIM_IRQHandler      0x08001d31  0x152  Code  Gb  stm32f4xx_hal_tim.o [1]
+HAL_TIM_OC_DelayElapsedCallback
+                        0x080023a5    0x2  Code  Wk  stm32f4xx_hal_tim.o [1]
+HAL_TIM_PWM_PulseFinishedCallback
+                        0x080023a7    0x2  Code  Wk  stm32f4xx_hal_tim.o [1]
+HAL_TIM_PeriodElapsedCallback
+                        0x08000f11    0xe  Code  Gb  piloteTimer6Up.o [1]
+HAL_TIM_TriggerCallback
+                        0x080023ab    0x2  Code  Wk  stm32f4xx_hal_tim.o [1]
+HAL_UART_Init           0x08001f95   0x5e  Code  Gb  stm32f4xx_hal_uart.o [1]
+HAL_UART_MspInit        0x080006f1   0x64  Code  Gb  stm32f4xx_hal_msp.o [1]
+MX_CAN1_Init            0x08000bbb   0x34  Code  Lc  main.o [1]
+MX_GPIO_Init            0x08000c6b  0x228  Code  Lc  main.o [1]
+MX_TIM6_Init            0x08000bef   0x4c  Code  Lc  main.o [1]
+MX_USART2_UART_Init     0x08000c3b   0x30  Code  Lc  main.o [1]
+NVIC_EncodePriority     0x080007d1   0x36  Code  Lc  stm32f4xx_hal_cortex.o [1]
+Region$$Table$$Base     0x080024cc          --   Gb  - Linker created -
+Region$$Table$$Limit    0x080024f0          --   Gb  - Linker created -
+SysTick_Config          0x08000807   0x28  Code  Lc  stm32f4xx_hal_cortex.o [1]
+SysTick_Handler         0x08002555    0x4  Code  Gb  stm32f4xx_it.o [1]
+SystemClock_Config      0x08000b13   0xa8  Code  Gb  main.o [1]
+SystemCoreClock         0x2000000c    0x4  Data  Gb  system_stm32f4xx.o [1]
+SystemInit              0x080023b5   0x3a  Code  Gb  system_stm32f4xx.o [1]
+TIM6_DAC_IRQHandler     0x08002559    0x6  Code  Gb  stm32f4xx_it.o [1]
+TIM_Base_SetConfig      0x08001e83   0xa6  Code  Gb  stm32f4xx_hal_tim.o [1]
+UART_SetConfig          0x08001ff3  0x26c  Code  Lc  stm32f4xx_hal_uart.o [1]
+__NVIC_EnableIRQ        0x080007a1   0x16  Code  Lc  stm32f4xx_hal_cortex.o [1]
+__NVIC_GetPriorityGrouping
+                        0x08000797    0xa  Code  Lc  stm32f4xx_hal_cortex.o [1]
+__NVIC_SetPriority      0x080007b7   0x1a  Code  Lc  stm32f4xx_hal_cortex.o [1]
+__NVIC_SetPriorityGrouping
+                        0x0800077d   0x1a  Code  Lc  stm32f4xx_hal_cortex.o [1]
+__aeabi_ldiv0           0x080023b1         Code  Gb  I64DivZer.o [5]
+__aeabi_memclr4         0x0800086d         Code  Gb  ABImemclr4.o [5]
+__aeabi_uldivmod        0x080022b5         Code  Gb  I64DivMod.o [5]
+__cmain                 0x080024f1         Code  Gb  cmain.o [5]
+__exit                  0x08002521   0x14  Code  Gb  exit.o [6]
+__iar_Memset4_word      0x08000a61         Code  Gb  ABImemset48.o [5]
+__iar_Memset8_word      0x08000a61         Code  Gb  ABImemset48.o [5]
+__iar_copy_init3        0x08002455   0x2c  Code  Gb  copy_init3.o [5]
+__iar_data_init3        0x08002481   0x28  Code  Gb  data_init.o [5]
+__iar_init_vfp          0x080024a9         Code  Gb  fpinit_M.o [4]
+__iar_program_start     0x08002575         Code  Gb  cstartup_M.o [5]
+__iar_zero_init3        0x08002415   0x40  Code  Gb  zero_init3.o [5]
+__low_level_init        0x0800250b    0x4  Code  Gb  low_level_init.o [3]
+__vector_table          0x08000000         Data  Gb  startup_stm32f407xx.o [1]
+_call_main              0x080024fd         Code  Gb  cmain.o [5]
+_exit                   0x08002515         Code  Gb  cexit.o [5]
+_main                   0x08002507         Code  Gb  cmain.o [5]
+compteurAntiRebond      0x20000578    0x4  Data  Gb  interfaceB1.o [1]
+compteurAvantLecture    0x20000574    0x4  Data  Gb  interfaceB1.o [1]
+exit                    0x0800250f    0x4  Code  Gb  exit.o [3]
+hcan1                   0x200004d4   0x28  Data  Gb  main.o [1]
+htim6                   0x20000454   0x40  Data  Gb  main.o [1]
+huart2                  0x20000494   0x40  Data  Gb  main.o [1]
+interfaceB1             0x20000570    0x4  Data  Gb  interfaceB1.o [1]
+interfaceB1_gere        0x0800139d   0x4a  Code  Gb  interfaceB1.o [1]
+interfaceB1_initialise  0x080013e7   0x1a  Code  Gb  interfaceB1.o [1]
+interfaceS0008          0x2000057c    0xc  Data  Gb  interfaceS0008.o [1]
+interfaceS0008_gereLaReception
+                        0x080014a9   0x30  Code  Gb  interfaceS0008.o [1]
+interfaceS0008_gereLaTransmission
+                        0x080014d9   0x20  Code  Gb  interfaceS0008.o [1]
+interfaceS0008_initialise
+                        0x080014f9   0x14  Code  Gb  interfaceS0008.o [1]
+interfaceS0008_prepareLaTransmission
+                        0x0800148d   0x1c  Code  Gb  interfaceS0008.o [1]
+interfaceS0008_recupereLesDonneesRecues
+                        0x08001455   0x18  Code  Gb  interfaceS0008.o [1]
+interfaceS0008_valideLaReception
+                        0x0800146d   0x20  Code  Gb  interfaceS0008.o [1]
+interfaceT1_allume      0x0800140d    0x6  Code  Gb  interfaceT1.o [1]
+interfaceT1_eteint      0x08001413    0x6  Code  Gb  interfaceT1.o [1]
+interfaceT1_initialise  0x08001419    0x6  Code  Gb  interfaceT1.o [1]
+interfaceT2_allume      0x0800141f    0x6  Code  Gb  interfaceT2.o [1]
+interfaceT2_eteint      0x08001425    0x6  Code  Gb  interfaceT2.o [1]
+interfaceT2_initialise  0x0800142b    0x6  Code  Gb  interfaceT2.o [1]
+interfaceT3_allume      0x08001431    0x6  Code  Gb  interfaceT3.o [1]
+interfaceT3_eteint      0x08001437    0x6  Code  Gb  interfaceT3.o [1]
+interfaceT3_initialise  0x0800143d    0x6  Code  Gb  interfaceT3.o [1]
+interfaceT4_allume      0x08001443    0x6  Code  Gb  interfaceT4.o [1]
+interfaceT4_eteint      0x08001449    0x6  Code  Gb  interfaceT4.o [1]
+interfaceT4_initialise  0x0800144f    0x6  Code  Gb  interfaceT4.o [1]
+main                    0x08000aef   0x24  Code  Gb  main.o [1]
+main_initialiseApresLeHAL
+                        0x08000adf    0xe  Code  Gb  main.o [1]
+main_initialiseAvantLeHAL
+                        0x08000a95   0x4a  Code  Gb  main.o [1]
+neFaitRien              0x08000aed    0x2  Code  Gb  main.o [1]
+piloteCAN1_CasierPostal
+                        0x20000450    0x4  Data  Gb  piloteCAN1.o [1]
+piloteCAN1_filtre       0x20000428   0x28  Data  Gb  piloteCAN1.o [1]
+piloteCAN1_initialise   0x0800179b   0x50  Code  Gb  piloteCAN1.o [1]
+piloteCAN1_litUnMessageRecu
+                        0x08001765   0x16  Code  Gb  piloteCAN1.o [1]
+piloteCAN1_reception    0x20000524   0x1c  Data  Gb  piloteCAN1.o [1]
+piloteCAN1_transmetDesDonnes
+                        0x0800177b   0x20  Code  Gb  piloteCAN1.o [1]
+piloteCAN1_transmission
+                        0x20000410   0x18  Data  Gb  piloteCAN1.o [1]
+piloteIOB1_initialise   0x08000f8d    0x2  Code  Gb  piloteIOB1.o [1]
+piloteIOB1_litLEntree   0x08000f81    0x8  Code  Gb  piloteIOB1.o [1]
+piloteIOT1_initialise   0x08000f9d    0xc  Code  Gb  piloteIOT1.o [1]
+piloteIOT1_metLaSortieA
+                        0x08000f91    0xc  Code  Gb  piloteIOT1.o [1]
+piloteIOT2_initialise   0x08000fb9    0xc  Code  Gb  piloteIOT2.o [1]
+piloteIOT2_metLaSortieA
+                        0x08000fad    0xc  Code  Gb  piloteIOT2.o [1]
+piloteIOT3_initialise   0x08000fd5    0xc  Code  Gb  piloteIOT3.o [1]
+piloteIOT3_metLaSortieA
+                        0x08000fc9    0xc  Code  Gb  piloteIOT3.o [1]
+piloteIOT4_initialise   0x08000ff1    0xc  Code  Gb  piloteIOT4.o [1]
+piloteIOT4_metLaSortieA
+                        0x08000fe5    0xc  Code  Gb  piloteIOT4.o [1]
+piloteTimer6Up_execute  0x20000594    0x4  Data  Gb  piloteTimer6Up.o [1]
+piloteTimer6Up_initialise
+                        0x08000f25    0x8  Code  Gb  piloteTimer6Up.o [1]
+piloteTimer6Up_permetLesInterruptions
+                        0x08000f1f    0x6  Code  Gb  piloteTimer6Up.o [1]
+piloteUSART2_confirmeLaReception
+                        0x08000f59    0xc  Code  Gb  piloteUSART2.o [1]
+piloteUSART2_initialise
+                        0x08000f65   0x14  Code  Gb  piloteUSART2.o [1]
+piloteUSART2_litUnOctetRecu
+                        0x08000f47    0xa  Code  Gb  piloteUSART2.o [1]
+piloteUSART2_octetDisponible
+                        0x08000f39    0xe  Code  Gb  piloteUSART2.o [1]
+piloteUSART2_transmet   0x08000f51    0x8  Code  Gb  piloteUSART2.o [1]
+processusBoutonConnecte_attendApresLeBouton
+                        0x08001667   0x14  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_attendUneDemande
+                        0x0800167d   0x38  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_attendUneReponse
+                        0x080016b5   0x66  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_changeT2
+                        0x080015e9   0x18  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_compteur
+                        0x20000589    0x1  Data  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_etatDeT2
+                        0x20000588    0x1  Data  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_initialise
+                        0x0800171b   0x30  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_octetsATransmettre
+                        0x20000590    0x4  Data  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_octetsRecus
+                        0x2000058c    0x4  Data  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_prepareLaTransmission
+                        0x08001601   0x18  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_recupereLesDonneesRecues
+                        0x08001619   0x18  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_traiteLesDonneesRecues
+                        0x08001651   0x16  Code  Gb  processusBoutonConnecte.o [1]
+processusBoutonConnecte_valideLesDonneesRecues
+                        0x08001631   0x20  Code  Gb  processusBoutonConnecte.o [1]
+processusClignotant_allumeLongtemps
+                        0x080015a5   0x22  Code  Gb  processusClignotant.o [1]
+processusClignotant_allumeUnPeu
+                        0x08001555   0x2a  Code  Gb  processusClignotant.o [1]
+processusClignotant_compteur
+                        0x20000564    0x4  Data  Gb  processusClignotant.o [1]
+processusClignotant_donneesATransmettre
+                        0x2000055c    0x8  Data  Gb  processusClignotant.o [1]
+processusClignotant_donneesRecues
+                        0x20000568    0x8  Data  Gb  processusClignotant.o [1]
+processusClignotant_eteintLongtemps
+                        0x08001581   0x24  Code  Gb  processusClignotant.o [1]
+processusClignotant_eteintUnPeu
+                        0x08001521   0x34  Code  Gb  processusClignotant.o [1]
+processusClignotant_initialise
+                        0x080015c7   0x16  Code  Gb  processusClignotant.o [1]
+serviceBaseDeTemps_execute
+                        0x20000540   0x1c  Data  Gb  serviceBaseDeTemps.o [1]
+serviceBaseDeTemps_gere
+                        0x08001001   0x1a  Code  Gb  serviceBaseDeTemps.o [1]
+serviceBaseDeTemps_initialise
+                        0x0800101b   0x1e  Code  Gb  serviceBaseDeTemps.o [1]
+serviceProtocole637     0x200004fc   0x28  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_attendLaLongueur
+                        0x08001169   0x6c  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_attendUnChecksum
+                        0x080012a9   0x5c  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_attendUnDebut
+                        0x0800113b   0x2c  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_attendUnZero
+                        0x08001241   0x66  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_attendUneDonnee
+                        0x080011d5   0x6a  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_attendUneRequete
+                        0x08001049   0x22  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_checksumDeReception
+                        0x2000059b    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_checksumDeTransmission
+                        0x2000059f    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_compteurDeReceptions
+                        0x20000598    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_compteurDeSynchronisationDesReceptions
+                        0x2000059d    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_compteurDeSynchronisationDesTransmissions
+                        0x2000059c    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_compteurDeTempsDAttente
+                        0x20000599    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_compteurDeTransmissions
+                        0x2000059e    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_gereLaSynchronisationDesReceptions
+                        0x08001305   0x1a  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_gereLaSynchronisationDesTransmissions
+                        0x08001121   0x1a  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_gereLeTempsDAttente
+                        0x0800131f   0x14  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_gereUneReception
+                        0x08001333   0x1e  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_initialise
+                        0x08001351   0x26  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_reception
+                        0x2000059a    0x1  Data  Gb  serviceProtocole637.o [1]
+serviceProtocole637_transmetLaLongueur
+                        0x0800106d   0x24  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_transmetUnChecksum
+                        0x08001101   0x20  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_transmetUnZero
+                        0x080010d5   0x2c  Code  Gb  serviceProtocole637.o [1]
+serviceProtocole637_transmetUneDonnee
+                        0x08001091   0x44  Code  Gb  serviceProtocole637.o [1]
+uwTick                  0x20000004    0x4  Data  Gb  stm32f4xx_hal.o [1]
+uwTickFreq              0x20000000    0x1  Data  Gb  stm32f4xx_hal.o [1]
+uwTickPrio              0x20000008    0x4  Data  Gb  stm32f4xx_hal.o [1]
+
+
+[1] = C:\Users\yproy\OneDrive - Cégep Limoilou\COURS\2022-08 247-637\LOGICIEL\S-0010\247-637 S-0010 V7\EWARM\247-637 S-0010 V7\Obj
+[2] = command line
+[3] = dl7M_tln.a
+[4] = m7M_tls.a
+[5] = rt7M_tl.a
+[6] = shb_l.a
+
+  9 898 bytes of readonly  code memory
+     62 bytes of readonly  data memory
+  1 440 bytes of readwrite data memory
+
+Errors: none
+Warnings: none

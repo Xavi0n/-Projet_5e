@@ -141,17 +141,10 @@ int ReceiveCAN()
 	for (i = 0; i < CAN_BUFFER_SIZE; i++)		 //
 	{											 //
 		ucCheckSum = ucCheckSum + frame.data[i]; // Calcul du CheckSum
+		UARTFrameOut[(i + 2)] = frame.data[i]; // Copie de la trame recue dans un tableau
+		printf("%02X", UARTFrameOut[i]);	   // Printf des valeurs pour dégogage
 	} //
-
-	if (ucCheckSum == frame.data[CAN_BUFFER_SIZE]) // Vérifie si le checksum calcule est egal a celui envoyé
-	{
-		for (i = 0; i < CAN_BUFFER_SIZE; i++)	   //
-		{										   //
-			UARTFrameOut[(i + 2)] = frame.data[i]; // Copie de la trame recue dans un tableau
-			printf("%02X", UARTFrameOut[i]);	   // Printf des valeurs pour dégogage
-		} //
-		printf("\n"); //
-	}
+	printf("\n"); //
 }
 
 int TransmitCAN()
@@ -276,11 +269,10 @@ int TransmitUART()
 	UARTFrameOut[1] = 0x08;													// Nombre d'octets de data a transmettre (exclus: '$', nb d'octets à transmettre et checksum)
 	ssize_t bytes_written = write(uart_fd, UARTFrameOut, UART_BUFFER_SIZE); // Writes data to UART port
 
-	printf("Sending CAN frame:\n");									   // Outputs what has been sent
-	printf("ID: 0x%03X, DLC: %d, Data:", frame.can_id, frame.can_dlc); // to VsCode's debug window
-	for (i = 0; i < frame.can_dlc; i++)								   //
+	printf("Sending UART frame:\n");									   // Outputs what has been sent
+	for (i = 0; i < UART_FRAME_SIZE; i++)								   //
 	{																   //
-		printf(" 0x%02X", frame.data[i]);							   //
+		printf(" 0x%02X", UARTFrameOut[i]);							   //
 	} //
 	printf("\n");
 

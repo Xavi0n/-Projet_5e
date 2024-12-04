@@ -158,7 +158,7 @@ void ReadUART() {
     } else if (availableBytes > 0) {
       Serial.println("Partial frame received. Waiting for more data...");
     } else {
-      Serial.println("No data available.");
+      
     }
   }
 }
