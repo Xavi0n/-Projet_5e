@@ -15,8 +15,8 @@ namespace Projet5e_PosteDeComande
     public partial class Poste_De_Controle : Form
     {
         private SerialPort uartPort;
-        byte[] cTrameOut = new byte[10] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-        byte[] cTrameIn = new byte[10] {0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        byte[] cTrameOut = new byte[11] {0x24,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        byte[] cTrameIn  = new byte[11] {0x24,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
         private string callingFunction = string.Empty;
         string selectedPort;
 
@@ -99,10 +99,10 @@ namespace Projet5e_PosteDeComande
             //ToConvert += ".";
             //ToConvert += cTrameIn[5].ToString();
             //string Converted = ToConvert.Substring(2);
-            //dPoidsRondelle = Convered;
+            //dPoidsRondelle = Convert.ToDouble(Converted);
 
-            //dPoidsRondelle = Convert.ToDouble(cTrameIn[4]);
-            //dPoidsRondelle = dPoidsRondelle + Convert.ToDouble(((cTrameIn[5])/100));
+            dPoidsRondelle = Convert.ToDouble(cTrameIn[4]);
+            dPoidsRondelle = dPoidsRondelle + Convert.ToDouble(((cTrameIn[5])/100));
 
             if (Ounces_Checkbox.Checked == true)        //Convertir le poids de grammes a onces si 
             {                                           //la case onces est cochée sur l'interface
@@ -112,21 +112,21 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementDeLaCouleur()
         {
-            if (cTrameIn[3] == PuckColors.ORANGE)
+            if (cTrameIn[4] == PuckColors.ORANGE)
             {
                 OrangePuck_Panel.Visible = true;
                 BlackPuck_Panel.Visible  = false;
                 GreyPuck_Panel.Visible   = false;
                 CouleurNonDefinie_Label.Visible  = false;
             }
-            if (cTrameIn[3] == PuckColors.NOIR)
+            if (cTrameIn[4] == PuckColors.NOIR)
             {
                 OrangePuck_Panel.Visible = false;
                 BlackPuck_Panel.Visible  = true;
                 GreyPuck_Panel.Visible   = false;
                 CouleurNonDefinie_Label.Visible  = false;
             }
-            if (cTrameIn[3] == PuckColors.METALLIQUE)
+            if (cTrameIn[4] == PuckColors.METALLIQUE)
             {
                 OrangePuck_Panel.Visible = false;
                 BlackPuck_Panel.Visible  = false;
@@ -155,11 +155,12 @@ namespace Projet5e_PosteDeComande
                     cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            // Amount of bytes to be transmitted
                     cTrameOut[2] = 0x10; // Decimal 10 in hexadecimal           // Identifier for control post
                     cTrameOut[3] = 0x44; // Decimal D in hexadecimal            // Command ('D' is for starting the factory)
-                    cTrameOut[4] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[5] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[6] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[7] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[8] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[4] = 0x00; // 0 in hexadecimal                    // Empty data
+                    cTrameOut[5] = 0x00; // 0 in hexadecimal                    // Empty data
+                    cTrameOut[6] = 0x00; // 0 in hexadecimal                    // Empty data
+                    cTrameOut[7] = 0x00; // 0 in hexadecimal                    // Empty data
+                    cTrameOut[8] = 0x00; // 0 in hexadecimal                    // Empty data
+                    cTrameOut[9] = 0x00; // 0 in hexadecimal                    // Empty data               
                 }
                 else if (callingFunction == "Arreter")
                 {
@@ -172,13 +173,14 @@ namespace Projet5e_PosteDeComande
                     cTrameOut[6] = 0x00; // 0 in hexadeciamal                   // Empty data
                     cTrameOut[7] = 0x00; // 0 in hexadeciamal                   // Empty data
                     cTrameOut[8] = 0x00; // 0 in hexadeciamal                   // Empty data
+                    cTrameOut[9] = 0x00; // 0 in hexadecimal                    // Empty data   
                 }
                 byte checksum = 0x00;
-                for (int i = 0; i <= 9; i++) // Calculate checksum
+                for (int i = 0; i <= 10; i++)       // Calculate checksum
                 {
                     checksum += cTrameOut[i];
                 }
-                cTrameOut[9] = checksum; // Store checksum
+                cTrameOut[10] = checksum;           // Store checksum
 
                 // Send the data frame over UART
                 foreach (byte b in cTrameOut)
@@ -196,10 +198,10 @@ namespace Projet5e_PosteDeComande
         {
             try
             {
-                if (uartPort.BytesToRead >= 10)          // Only process data when available
+                if (uartPort.BytesToRead >= 11)          // Only process data when available
                 {
                     Array.Clear(cTrameIn, 0, cTrameOut.Length);     //Clear frame data before attempting to read
-                    uartPort.Read(cTrameIn, 0, 10);      // Read up to 10 bytes from the serial port
+                    uartPort.Read(cTrameIn, 0, cTrameOut.Length);   // Read up to 10 bytes from the serial port
 
                     foreach (byte b in cTrameIn)
                     {
@@ -207,15 +209,15 @@ namespace Projet5e_PosteDeComande
                     }
                     Debug.WriteLine("\n");
 
-                    if (cTrameIn[0] == 0x24)             // Check if the first byte is '$' (0x24 in ASCII)
+                    if (cTrameIn[0] == 0x24)                    // Check if the first byte is '$' (0x24 in ASCII)
                     {
                         byte checksum = 0;
-                        for (int i = 0; i < 9; i++)      // Sum all bytes except checksum byte
+                        for (int i = 0; i < 10; i++)            // Sum all bytes except checksum byte
                         {
                             checksum += cTrameIn[i];
                         }
 
-                        if (checksum == cTrameIn[9])     //If the checksum matches, update the inteface
+                        if (checksum == cTrameIn[10])           //If the checksum matches, update the inteface
                         {
                             if (cTrameIn[2] == 'I')             //Si la trame donne une information au système
                             {

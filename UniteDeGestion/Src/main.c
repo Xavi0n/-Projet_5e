@@ -36,6 +36,7 @@
 //il faut s'assurer que le compte pour la periode est plus petit que 65536
 
 #include "piloteTimer6Up.h"
+#include "ProcessusPasserelle.h"
 #include "piloteCAN1.h"
 #include "piloteUSART2.h"
 #include "serviceBaseDeTemps.h"
@@ -219,7 +220,7 @@ static void MX_CAN1_Init(void)
   /* USER CODE END CAN1_Init 1 */
   hcan1.Instance = CAN1;
   hcan1.Init.Prescaler = 16;
-  hcan1.Init.Mode = CAN_MODE_LOOPBACK;
+  hcan1.Init.Mode = CAN_MODE_NORMAL;
   hcan1.Init.SyncJumpWidth = CAN_SJW_1TQ;
   hcan1.Init.TimeSeg1 = CAN_BS1_12TQ;
   hcan1.Init.TimeSeg2 = CAN_BS2_8TQ;
