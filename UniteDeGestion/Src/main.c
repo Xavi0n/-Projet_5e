@@ -41,6 +41,7 @@
 #include "serviceBaseDeTemps.h"
 #include "serviceProtocole637.h"
 #include "serviceinterface637.h"
+#include "serviceProtocoleCAN.h"
     
 /* USER CODE END Includes */
 
@@ -93,6 +94,7 @@ void main_initialiseAvantLeHAL(void)
   serviceBaseDeTemps_initialise();
   serviceProtocole637_initialise();
   interfaceS0008_initialise();
+  serviceProtocoleCAN_initialise();
 }
 
 void main_initialiseApresLeHAL(void)

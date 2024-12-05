@@ -41,6 +41,8 @@ unsigned int piloteCAN1_messageTransmis(void)
   return HAL_CAN_GetTxMailboxesFreeLevel(&hcan1);
 }
 
+
+
 unsigned char piloteCAN1_litUnMessageRecu(unsigned char *DonneesRecues)
 {
   if (HAL_CAN_GetRxMessage(&hcan1, CAN_FILTER_FIFO0,
@@ -50,6 +52,9 @@ unsigned char piloteCAN1_litUnMessageRecu(unsigned char *DonneesRecues)
   }
   return PILOTECAN1_DISPONIBLE;
 }
+
+
+
 
 unsigned int piloteCAN1_transmetDesDonnes(unsigned int Identification11Bits,
                                           unsigned char *Donnees,
@@ -64,6 +69,9 @@ unsigned int piloteCAN1_transmetDesDonnes(unsigned int Identification11Bits,
   }
   return PILOTECAN1_TRANSMIS;
 }
+
+
+
 
 unsigned int piloteCAN1_initialise(void)
 {

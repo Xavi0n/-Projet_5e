@@ -1124,6 +1124,12 @@
                 <file>
                     <name>$PROJ_DIR$\..\Src\serviceProtocole637.h</name>
                 </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\serviceProtocoleCAN.c</name>
+                </file>
+                <file>
+                    <name>$PROJ_DIR$\..\Src\serviceProtocoleCAN.h</name>
+                </file>
             </group>
             <file>
                 <name>$PROJ_DIR$\..\Src\main.c</name>

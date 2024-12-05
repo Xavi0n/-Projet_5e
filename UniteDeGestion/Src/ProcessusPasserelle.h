@@ -31,7 +31,8 @@
 //pas de definitions publiques
 
 //Fonctions publiques:
-void processusBoutonConnecte_initialise(void);
+void processusPasserelle_copieDansUART(void);
+void processusPasserelle_copieDansCAN(void);
 
 //Variables publiques:
 //pas de variables publiques
