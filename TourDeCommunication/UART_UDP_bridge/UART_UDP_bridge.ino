@@ -70,36 +70,33 @@ void loop() {
 }
 
 void ReadUDP() {
-  static unsigned long UDPlastTime = 0;  // Stores the last time the function executed
+  static unsigned long UDPlastTime = 0;
   unsigned long UDPcurrentTime = millis();
 
-  // Execute only if 100 millisecond have been elapsed
   if (UDPcurrentTime - UDPlastTime >= 100) {
-    UDPlastTime = UDPcurrentTime;  // Update the last execution time
+    UDPlastTime = UDPcurrentTime;
 
-    // Check if a UDP packet has been received
     int packetSize = udp.parsePacket();
-
-    if (packetSize) {  // If the packet size is greater than 0, data has been received
-      int len = udp.read(incomingPacket, 255);
+    if (packetSize) {
+      int len = udp.read(incomingPacket, sizeof(incomingPacket));
       if (len > 0) {
-        // Print received data for debugging
         for (int i = 0; i < len; i++) {
           Serial.print("Byte ");
           Serial.print(i);
           Serial.print(": ");
-          Serial.println(incomingPacket[i], HEX);  // Print in hexadecimal format
+          Serial.println(incomingPacket[i], HEX);
         }
 
-        // Process the packet if it matches the expected size
         if (len == UDP_PACKET_SIZE) {
           for (int i = 0; i < UDP_PACKET_SIZE; i++) {
-            UARTFrameOUT[i + 2] = incomingPacket[i];  // Write UDP data into the outgoing UART frame
+            UARTFrameOUT[i + 2] = incomingPacket[i];
           }
-          WriteUART();  // Send data over UART
+          WriteUART();
         } else {
           Serial.println("Warning: Received UDP packet size does not match expected size.");
         }
+        // Reset the buffer after processing
+        memset(incomingPacket, 0, sizeof(incomingPacket));
       }
     }
   }
@@ -122,12 +119,7 @@ void ReadUART() {
     UARTlastTime = UARTcurrentTime;
 
     int availableBytes = STMSerial.available();
-    if (availableBytes > 0) {
-      Serial.print("Bytes in buffer: ");
-      Serial.println(availableBytes);
-    }
-
-    if (availableBytes >= UART_PACKET_SIZE) {  // Process only if full frame is available
+    if (availableBytes >= UART_PACKET_SIZE) {
       Serial.println("Processing UART Frame...");
       for (int i = 0; i < UART_PACKET_SIZE; i++) {
         UARTFrameIN[i] = STMSerial.read();
@@ -155,25 +147,23 @@ void ReadUART() {
       } else {
         Serial.println("Invalid start condition.");
       }
-    } else if (availableBytes > 0) {
-      Serial.println("Partial frame received. Waiting for more data...");
-    } else {
-      
+      memset(UARTFrameIN, 0, sizeof(UARTFrameIN));
     }
   }
 }
 
 void WriteUART() {
-  UARTFrameOUT[0] = UART_START_CONDITION;  // Start condition for UART frames
-  UARTFrameOUT[1] = CONTROL_TOWER_ID;      // Identifier for Control Tower/Transports gestion unit on CAN network
-  ucCheckSum = 0;                          // Reset stored checksum value to ensure it is calculated correctly each time
+  UARTFrameOUT[0] = UART_START_CONDITION;
+  UARTFrameOUT[1] = 0x08;
 
-  for (i = 2; i < (UART_PACKET_SIZE - 1); i++) {  // Calculate CheckSum for outgoing UART data frame
-    ucCheckSum = ucCheckSum + UARTFrameOUT[i];    // CheckSum does not include either the start condition of the identifier
+  ucCheckSum = 0;
+  for (i = 2; i < (UART_PACKET_SIZE - 1); i++) {
+    ucCheckSum += UARTFrameOUT[i];
   }
-  UARTFrameOUT[UART_PACKET_SIZE - 1] = ucCheckSum;  //Checksum as the last byte of the outgoing UART data frame
+  UARTFrameOUT[UART_PACKET_SIZE - 1] = ucCheckSum;
 
   for (i = 0; i < UART_PACKET_SIZE; i++) {
-    STMSerial.write(UARTFrameOUT[i]);  // Send each byte individually
+    STMSerial.write(UARTFrameOUT[i]);
   }
+  memset(UARTFrameOUT, 0, sizeof(UARTFrameOUT)); // Reset buffer
 }

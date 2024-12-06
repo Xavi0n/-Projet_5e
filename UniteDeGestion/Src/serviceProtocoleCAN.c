@@ -115,21 +115,7 @@ void serviceProtocoleCAN_attendUneReception(void)
   {  
     return;
   }
-  
-  
-  /*
-  if (serviceProtocoleCAN_gereLeTempsDAttente() == SERVICEPROTOCOLECAN_TEMPS_DEPASSE)
-  {
-    serviceProtocoleCAN.statut = SERVICEPROTOCOLECAN_TEMPS_DEPASSE;
-    serviceProtocoleCAN.information = INFORMATION_DISPONIBLE;
-    //serviceBaseDeTemps_execute[SERVICEPROTOCOLECAN_PHASE_RECEPTION] =
-      //serviceProtocleCAN_attendUneReception;
-    serviceProtocoleCAN_compteurDeTempsDAttente = 0;
-    return;
-  }
-  */
 
-  
   if (piloteCAN1_messageDisponible() == PILOTECAN1_PAS_DISPONIBLE)
   { 
     return;
@@ -137,7 +123,6 @@ void serviceProtocoleCAN_attendUneReception(void)
   
   piloteCAN1_litUnMessageRecu(serviceProtocoleCAN.octetsRecus);
   serviceProtocoleCAN.information = INFORMATION_DISPONIBLE;
-  serviceBaseDeTemps_execute[PROCESSUSPASSERELLE_TRANSMISSION_UART] = processusPasserelle_copieDansUART;
 }
 
 

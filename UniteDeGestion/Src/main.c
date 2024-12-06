@@ -41,7 +41,6 @@
 #include "piloteUSART2.h"
 #include "serviceBaseDeTemps.h"
 #include "serviceProtocole637.h"
-#include "serviceinterface637.h"
 #include "serviceProtocoleCAN.h"
     
 /* USER CODE END Includes */
@@ -94,8 +93,8 @@ void main_initialiseAvantLeHAL(void)
   piloteUSART2_initialise();
   serviceBaseDeTemps_initialise();
   serviceProtocole637_initialise();
-  interfaceS0008_initialise();
   serviceProtocoleCAN_initialise();
+  InitProcessusPasserelle();
 }
 
 void main_initialiseApresLeHAL(void)

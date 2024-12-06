@@ -1072,15 +1072,6 @@
         <group>
             <name>User</name>
             <group>
-                <name>Interface</name>
-                <file>
-                    <name>$PROJ_DIR$\..\Src\serviceinterface637.c</name>
-                </file>
-                <file>
-                    <name>$PROJ_DIR$\..\Src\serviceinterface637.h</name>
-                </file>
-            </group>
-            <group>
                 <name>Pilote</name>
                 <file>
                     <name>$PROJ_DIR$\..\Src\piloteCAN1.c</name>
