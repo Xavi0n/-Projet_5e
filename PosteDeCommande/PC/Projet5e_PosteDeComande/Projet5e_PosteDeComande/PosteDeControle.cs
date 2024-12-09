@@ -15,8 +15,8 @@ namespace Projet5e_PosteDeComande
     public partial class Poste_De_Controle : Form
     {
         private SerialPort uartPort;
-        byte[] cTrameOut = new byte[11] {0x24,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
-        byte[] cTrameIn  = new byte[11] {0x24,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        byte[] cTrameOut = new byte[11] {0x24,0x08,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
+        byte[] cTrameIn  = new byte[11] {0x24,0x08,0x01,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00};
         private string callingFunction = string.Empty;
         string selectedPort;
 
@@ -29,10 +29,10 @@ namespace Projet5e_PosteDeComande
 
         public enum StationState
         {
-            WEIGHING_STATION = 0,
-            OTW_TO_WEIGHING = 1,
-            OTW_TO_SORTING = 2,
-            SORTING_STATION = 3
+            WEIGHING_STATION,
+            OTW_TO_WEIGHING,
+            OTW_TO_SORTING,
+            SORTING_STATION
         }
         StationState currentState = StationState.WEIGHING_STATION;
         double dPoidsRondelle;
@@ -45,8 +45,6 @@ namespace Projet5e_PosteDeComande
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
             uartPort.DataReceived += ReceptionDeLaTrame;            // Register the DataReceived event handler
             Grams_Checkbox.Checked = true;
-            Array.Clear(cTrameOut, 0, cTrameOut.Length);
-            Array.Clear(cTrameIn, 0, cTrameOut.Length);
         }
 
         private void PopulateCOMPorts()
@@ -63,7 +61,26 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementPositionVehicule()
         {
-            switch (currentState)
+           switch (cTrameIn[5])             // Convertir 1, 3 ou 5 selon la position envoyée par le véhicule
+            {                               // en l'une des 4 positions posibles pour l'affichage du véhicule
+                case 1:
+                    currentState = StationState.WEIGHING_STATION;
+                    break;
+                case 3:
+                    if (currentState == StationState.WEIGHING_STATION)
+                    {
+                        currentState = StationState.OTW_TO_SORTING;
+                    }
+                    else if (currentState == StationState.SORTING_STATION)
+                    {
+                        currentState = StationState.OTW_TO_WEIGHING;
+                    }
+                    break;
+                case 5:
+                    currentState = StationState.SORTING_STATION;
+                    break;
+            }
+            switch (currentState)           // Actualisation de la position du véhicule
             {
                 case StationState.WEIGHING_STATION:
                     // Set position for WEIGHING_STATION
@@ -101,8 +118,8 @@ namespace Projet5e_PosteDeComande
             //string Converted = ToConvert.Substring(2);
             //dPoidsRondelle = Convert.ToDouble(Converted);
 
-            dPoidsRondelle = Convert.ToDouble(cTrameIn[4]);
-            dPoidsRondelle = dPoidsRondelle + Convert.ToDouble(((cTrameIn[5])/100));
+            dPoidsRondelle = Convert.ToDouble(cTrameIn[5]);
+            dPoidsRondelle = dPoidsRondelle + Convert.ToDouble(((cTrameIn[6])/100));
 
             if (Ounces_Checkbox.Checked == true)        //Convertir le poids de grammes a onces si 
             {                                           //la case onces est cochée sur l'interface
@@ -143,56 +160,40 @@ namespace Projet5e_PosteDeComande
         }
         private void EnvoiDeLaTrame()
         {
-            if (callingFunction == "Demarrer" || callingFunction == "Arreter")
+            // Disable the DataReceived event temporarily to avoid conflicts on UART
+            uartPort.DataReceived -= ReceptionDeLaTrame;
+            // Prepare the data frame based on the command
+            if (callingFunction == "Demarrer")
             {
-                // Disable the DataReceived event temporarily
-                uartPort.DataReceived -= ReceptionDeLaTrame;
-
-                // Prepare the data frame based on the command
-                if (callingFunction == "Demarrer")
-                {
-                    cTrameOut[0] = 0x24; // '$' in ASCII (hexadecimal: 0x24)    // Start condition
-                    cTrameOut[1] = 0x08; // Decimal 8 in hexadecimal            // Amount of bytes to be transmitted
-                    cTrameOut[2] = 0x10; // Decimal 10 in hexadecimal           // Identifier for control post
-                    cTrameOut[3] = 0x44; // Decimal D in hexadecimal            // Command ('D' is for starting the factory)
-                    cTrameOut[4] = 0x00; // 0 in hexadecimal                    // Empty data
-                    cTrameOut[5] = 0x00; // 0 in hexadecimal                    // Empty data
-                    cTrameOut[6] = 0x00; // 0 in hexadecimal                    // Empty data
-                    cTrameOut[7] = 0x00; // 0 in hexadecimal                    // Empty data
-                    cTrameOut[8] = 0x00; // 0 in hexadecimal                    // Empty data
-                    cTrameOut[9] = 0x00; // 0 in hexadecimal                    // Empty data               
-                }
-                else if (callingFunction == "Arreter")
-                {
-                    cTrameOut[0] = 0x24; // '$' in ASCII
-                    cTrameOut[1] = 0x08; // Amount of bytes
-                    cTrameOut[2] = 0x10; // Decimal 10 in hexadecimal           // Identifier for control post
-                    cTrameOut[3] = 0x41; // Command ('A' for stop)
-                    cTrameOut[4] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[5] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[6] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[7] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[8] = 0x00; // 0 in hexadeciamal                   // Empty data
-                    cTrameOut[9] = 0x00; // 0 in hexadecimal                    // Empty data   
-                }
-                byte checksum = 0x00;
-                for (int i = 0; i <= 10; i++)       // Calculate checksum
-                {
-                    checksum += cTrameOut[i];
-                }
-                cTrameOut[10] = checksum;           // Store checksum
-
-                // Send the data frame over UART
-                foreach (byte b in cTrameOut)
-                {
-                    Debug.Write($"{b:x2} ");                    // Debugging output
-                    uartPort.Write(new byte[] { b }, 0, 1);     // Send byte by byte
-                }
-                Debug.WriteLine("\n");
-                Array.Clear(cTrameOut, 0, cTrameOut.Length);
-                // Re-enable the DataReceived event after the data is sent
-                uartPort.DataReceived += ReceptionDeLaTrame;
+                cTrameOut[0] = 0x24;    // Start condition for UART frames
+                cTrameOut[1] = 0x08;    // Amount of bytes to be transmitted
+                cTrameOut[2] = 0x01;    // Identifier for Control post
+                cTrameOut[3] = 0x44;    // Command ('D' for start)     
             }
+            else if (callingFunction == "Arreter")
+            {
+                cTrameOut[0] = 0x24;    // Start condition for UART frames
+                cTrameOut[1] = 0x08;    // Amount of bytes to be transmitted
+                cTrameOut[2] = 0x01;    // Identifier for Control post
+                cTrameOut[3] = 0x41;    // Command ('A' for stop) 
+            }
+            byte checksum = 0x00;
+            for (int i = 2; i < 10; i++)        // Calculate checksum
+            {
+                checksum += cTrameOut[i];
+            }
+            cTrameOut[10] = checksum;           // Store checksum
+
+            // Send the data frame over UART
+            Debug.WriteLine("Trame envoyée au Beagle via UART:");
+            foreach (byte b in cTrameOut)
+            {
+                Debug.Write($"{b:x2} ");                    // Debugging output
+                uartPort.Write(new byte[] { b }, 0, 1);     // Send byte by byte
+            }
+            Debug.WriteLine("\n");
+            Array.Clear(cTrameOut, 0, cTrameOut.Length);    // Clear frame data after sending
+            uartPort.DataReceived += ReceptionDeLaTrame;    // Re-enable the DataReceived event after the data is sent
         }
         private void ReceptionDeLaTrame(object sender, SerialDataReceivedEventArgs e)
         {
@@ -200,9 +201,10 @@ namespace Projet5e_PosteDeComande
             {
                 if (uartPort.BytesToRead >= 11)          // Only process data when available
                 {
-                    Array.Clear(cTrameIn, 0, cTrameOut.Length);     //Clear frame data before attempting to read
-                    uartPort.Read(cTrameIn, 0, cTrameOut.Length);   // Read up to 10 bytes from the serial port
+                    Array.Clear(cTrameIn, 0, cTrameIn.Length);      //Clear frame data before attempting to read
+                    uartPort.Read(cTrameIn, 0, cTrameIn.Length);    // Read up to 10 bytes from the serial port
 
+                    Debug.WriteLine("Trame Reçue par le PC: ");
                     foreach (byte b in cTrameIn)
                     {
                         Debug.Write($"{b:x2} ");
@@ -212,18 +214,30 @@ namespace Projet5e_PosteDeComande
                     if (cTrameIn[0] == 0x24)                    // Check if the first byte is '$' (0x24 in ASCII)
                     {
                         byte checksum = 0;
-                        for (int i = 0; i < 10; i++)            // Sum all bytes except checksum byte
+                        for (int i = 2; i < 10; i++)            // Sum all bytes except checksum byte
                         {
                             checksum += cTrameIn[i];
                         }
 
                         if (checksum == cTrameIn[10])           //If the checksum matches, update the inteface
                         {
-                            if (cTrameIn[2] == 'I')             //Si la trame donne une information au système
+                            if (cTrameIn[3] == 'I')             //Si la trame donne une information au système
                             {
                                 AjustementDuPoids();            //Ajustement du poids de la puck transportée par le véhicule
                                 AjustementDeLaCouleur();        //Ajustement de la couleur de la puck transportée par le véhicule
                                 AjustementPositionVehicule();   //Ajustement de la position du véhicule
+                            }
+                            else if (cTrameIn[3] == 'D')
+                            {
+                                Arreter_Button.Enabled = true;          //Activation du bouton pour arreter l'usine
+                                Connecter_Button.Enabled = false;       //Desactivation de l'option de deconnecter le port UART
+                                Demarrer_Button.Enabled = false;        //Desactivation du bouton Demarrer
+                            }
+                            else if (cTrameIn[3] == 'A')
+                            {
+                                Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
+                                Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
+                                Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
                             }
                         }
                         else   //Handle checksum mismatch
