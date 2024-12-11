@@ -20,32 +20,71 @@
 #define BAUD_RATE B19200	   // Set baud rate to 19200
 
 #define CAN_BUFFER_SIZE 8
-#define UART_BUFFER_SIZE 10
+#define UART_BUFFER_SIZE 11
 
-int fdSocketCAN;				// File descriptor for the CAN socket
-struct sockaddr_can addr;		// Structure to store the CAN socket address
-struct ifreq ifr;				// Structure to store information about the CAN interface
-struct can_frame frame;			// CAN frame for message data
-unsigned char UARTFrameIn[10];	// Frame for data incoming from PC app
-unsigned char UARTFrameOut[10]; // Frame for data going to PC app
-unsigned char i = 0;			// Variable for temporary use
-int nbytes;						// Number of bytes either sent or received from the CAN interface
-unsigned char ucCheckSum = 0; 	// Temporary variable to be used to calculate checksum
+int fdSocketCAN;							  // File descriptor for the CAN socket
+struct sockaddr_can addr;					  // Structure to store the CAN socket address
+struct ifreq ifr;							  // Structure to store information about the CAN interface
+struct can_frame frame;						  // CAN frame for message data
+unsigned char UARTFrameIn[UART_BUFFER_SIZE];  // Frame for data incoming from PC app
+unsigned char UARTFrameOut[UART_BUFFER_SIZE]; // Frame for data going to PC app
+unsigned char i = 0;						  // Variable for temporary use
+int nbytes;									  // Number of bytes either sent or received from the CAN interface
+unsigned char ucCheckSum = 0;				  // Temporary variable to be used to calculate checksum
+int uart_fd = -1;							  // File descriptor for UART communication
 
-
-int uart_fd = -1; // File descriptor for UART communication
+int InitCan();
+int CloseCan();
+int InitUART();
+int CloseUART();
+int ReceiveCAN();
+int TransmitCAN();
+int ReceiveUART();
+int TransmitUART();
 
 /////////////////////////////////
 // MAIN
 /////////////////////////////////
-void main(void)
+int main(void)
 {
+	InitCan();
+	InitUART();
+
+	int pipefd[2];
+	pid_t pid;
+
+	// Créer un processus enfant
+	pid = fork();
+	if (pid == -1)
+	{ // Une erreur s'est produite
+		perror("fork");
+		return -1;
+	}
+
+	if (pid == 0)
+	{ // Code exécuté par le processus enfant
+		while (1)
+		{
+			ReceiveUART();	// TransmitCAN est appelé dans receiveUART 
+		}
+	}
+	else
+	{ // Code exécuté par le processus parent
+		while (1)
+		{
+			ReceiveCAN();	// TransmitUART est appelé dans ReceiveCAN
+		}
+	}
+
+	CloseCan();
+	CloseUART();
+	return 0;
 }
 
 /////////////////////////////////
 // Fonctions appelees dans MAIN
 /////////////////////////////////
-int InitCan(int argc, char *argv[]) // char **argv
+int InitCan()
 {
 	printf("Projet de 5e session, station Poste de Contôle\r\n"); // Displays the start message on a terminal
 
@@ -54,12 +93,7 @@ int InitCan(int argc, char *argv[]) // char **argv
 		perror("Socket");									   // Type: SOCK_RAW, allowing the use of raw CAN frames
 		return -1;											   // Protocol: CAN_RAW, specifying the use of the raw CAN protocol
 	} // If socket creation fails, display the error and return -1
-
-	if (argc == 2)					   // Checks if an interface name has been specified a san argument
-		strcpy(ifr.ifr_name, argv[1]); // If so, uses the given name
-	else							   // Otherwise, uses the interface CAN0 by default
-		strcpy(ifr.ifr_name, "can0");
-
+	strcpy(ifr.ifr_name, "can0");			// Using CAN0
 	ioctl(fdSocketCAN, SIOCGIFINDEX, &ifr); // Retrieves the index of the CAN interface and stores it in ifr.ifindex
 
 	memset(&addr, 0, sizeof(addr));		// addr is reset to 0
@@ -71,6 +105,7 @@ int InitCan(int argc, char *argv[]) // char **argv
 		perror("Bind");
 		return -1;
 	}
+	printf("CAN initialized successfully\r\n");
 	return 0;
 }
 
@@ -88,7 +123,8 @@ int InitUART()
 {
 	struct termios options; // Structure to store the terminal (UART) configuration settings
 
-	uart_fd = open(UART_PORT, O_RDWR | O_NOCTTY | O_NDELAY); // Opens UART port
+	uart_fd = open(UART_PORT, O_RDWR | O_NOCTTY | O_NONBLOCK | O_NDELAY); // Opens UART port
+
 	if (uart_fd == -1)
 	{								   // If opening UART port failed, return -1
 		perror("Failed to open UART"); // and display  error message
@@ -105,6 +141,8 @@ int InitUART()
 	options.c_cflag &= ~PARENB;			   // No parity
 	options.c_cflag &= ~CSTOPB;			   // 1 stop bit
 	options.c_cflag &= ~CRTSCTS;		   // No hardware flow control
+	options.c_lflag &= ~ICANON; 		   // Disable canonical mode
+	options.c_lflag &= ~(ECHO | ECHOE);    // Non Cannonical mode, Disable echo, Disable signal
 	options.c_cflag |= CREAD | CLOCAL;	   // Enable receiver, local mode
 	tcsetattr(uart_fd, TCSANOW, &options); // Applies previously declared settings to the UART port
 
@@ -138,13 +176,16 @@ int ReceiveCAN()
 		perror("Read"); // If received data is negative amount of bytes
 		return -1;		// Return wit hvalue -1 and displays reading error
 	}
+	printf("Processing received CAN data:\n");
+	ucCheckSum = 0;
 	for (i = 0; i < CAN_BUFFER_SIZE; i++)		 //
 	{											 //
-		ucCheckSum = ucCheckSum + frame.data[i]; // Calcul du CheckSum
-		UARTFrameOut[(i + 2)] = frame.data[i]; // Copie de la trame recue dans un tableau
-		printf("%02X", UARTFrameOut[i]);	   // Printf des valeurs pour dégogage
+		ucCheckSum += frame.data[i]; 			 // Calcul du CheckSum
+		UARTFrameOut[(i + 2)] = frame.data[i];	 // Copie de la trame recue dans un tableau
+		printf("%02X", UARTFrameOut[i]);		 // Printf des valeurs pour dégogage
 	} //
 	printf("\n"); //
+	TransmitUART();
 }
 
 int TransmitCAN()
@@ -174,107 +215,67 @@ int TransmitCAN()
 	}
 }
 
-void ReceiveUART(int signo)
+int ReceiveUART()
 {
-    int bytes_available = 0;
-
-    // Check how many bytes are available in the UART receive buffer
-    if (ioctl(uart_fd, FIONREAD, &bytes_available) < 0)
-    {
-        perror("Failed to check bytes available");
-        return;
-    }
-
-    // If exactly 10 bytes are available, read them into UARTFrameIn
-    if (bytes_available >= UART_BUFFER_SIZE)
-    {
-        int bytes_read = read(uart_fd, UARTFrameIn, UART_BUFFER_SIZE);
-
-        if (bytes_read == UART_BUFFER_SIZE)
-        {
-            printf("10 bytes received from UART: ");
-            for (i = 0; i < UART_BUFFER_SIZE; i++)
-            {
-                printf("0x%02X ", UARTFrameIn[i]);
-            }
-            printf("\n");
-
-            // Verify checksum
-            for (i = 2; i < UART_BUFFER_SIZE - 1; i++) // Sum bytes 2 to 8
-            {
-                ucCheckSum += UARTFrameIn[i];
-            }
-
-            if (ucCheckSum == UARTFrameIn[UART_BUFFER_SIZE - 1]) // Compare with last byte (checksum byte)
-            {
-                printf("Checksum verified successfully!\n");
-
-                // Process the valid frame (copy to UARTFrameOut, send to CAN, etc.)
-                memcpy(UARTFrameOut, UARTFrameIn, UART_BUFFER_SIZE); // Example of copying valid data
-            }
-            else
-            {
-                printf("Checksum mismatch! Calculated: 0x%02X, Received: 0x%02X\n",
-                       ucCheckSum, UARTFrameIn[UART_BUFFER_SIZE - 1]);
-            }
-        }
-        else
-        {
-            printf("Error reading data: expected %d bytes, got %d bytes\n", UART_BUFFER_SIZE, bytes_read);
-        }
-
-        // Clear any extra bytes in the buffer
-        if (bytes_available > UART_BUFFER_SIZE)
-        {
-            char temp[256];
-            read(uart_fd, temp, bytes_available - UART_BUFFER_SIZE);
-        }
-    }
-    else
-    {
-        printf("Not enough data yet: %d bytes available\n", bytes_available);
-    }
-}
-
-int enable_uart_interrupt(int uart_fd)
-{
-	// Set up the signal handler
-	struct sigaction saio;
-	saio.sa_handler = ReceiveUART;
-	saio.sa_flags = 0;
-	saio.sa_restorer = NULL;
-	if (sigaction(SIGIO, &saio, NULL) < 0)
+	int bytes_available = 0;
+	while (bytes_available < UART_BUFFER_SIZE)
 	{
-		perror("Failed to set SIGIO handler");
-		return -1;
+		if (ioctl(uart_fd, FIONREAD, &bytes_available) < 0)
+		{
+			perror("Failed to check bytes available");
+			return -1;
+		}
+		// Add a short delay to prevent busy-waiting
+		usleep(1000); // 1 ms delay
 	}
-	// Allow the process to receive SIGIO
-	if (fcntl(uart_fd, F_SETOWN, getpid()) < 0)
+
+	// When the eleventh byte is seen in buffer, read it into UARTFrameIn
+	int bytes_read = read(uart_fd, UARTFrameIn, UART_BUFFER_SIZE);
+
+	printf("11 bytes received from UART: ");
+	for (i = 0; i < UART_BUFFER_SIZE; i++)
 	{
-		perror("Failed to set process owner for SIGIO");
-		return -1;
+		printf("0x%02X ", UARTFrameIn[i]);
 	}
-	// Enable asynchronous notifications
-	if (fcntl(uart_fd, F_SETFL, FASYNC) < 0)
+	printf("\n");
+
+	// Verify checksum
+	ucCheckSum = 0;
+	for (i = 2; i < UART_BUFFER_SIZE - 1; i++)
 	{
-		perror("Failed to enable FASYNC");
-		return -1;
+		ucCheckSum += UARTFrameIn[i];
 	}
-	return 0; // Success
+
+	if (ucCheckSum == UARTFrameIn[UART_BUFFER_SIZE-1]) // Compare with last byte (checksum byte)
+	{
+		printf("Checksum verified successfully!\n");
+		TransmitCAN();
+	}
+	else
+	{
+		printf("Checksum mismatch! Calculated: 0x%02X, Received: 0x%02X\n",
+			   ucCheckSum, UARTFrameIn[UART_BUFFER_SIZE - 1]);
+	}
+	// Clear any extra bytes in the buffer
+	if (bytes_available > UART_BUFFER_SIZE)
+	{
+		char temp[256];
+		read(uart_fd, temp, bytes_available - UART_BUFFER_SIZE);
+	}
 }
 
 int TransmitUART()
 {
-	UARTFrameOut[0] = 0x24;													// Start Condition de la trame UART ('$' en hexadecimal)
-	UARTFrameOut[1] = 0x08;													// Nombre d'octets de data a transmettre (exclus: '$', nb d'octets à transmettre et checksum)
-	ssize_t bytes_written = write(uart_fd, UARTFrameOut, UART_BUFFER_SIZE); // Writes data to UART port
-
-	printf("Sending UART frame:\n");									   // Outputs what has been sent
-	for (i = 0; i < UART_FRAME_SIZE; i++)								   //
-	{																   //
-		printf(" 0x%02X", UARTFrameOut[i]);							   //
+	UARTFrameOut[0] = 0x24;					// Start Condition de la trame UART ('$' en hexadecimal)
+	UARTFrameOut[1] = 0x08;					// Nombre d'octets de data a transmettre (exclus: '$', nb d'octets à transmettre et checksum)
+	
+	printf("Sending UART frame:\n");		// Outputs what has been sent
+	for (i = 0; i <= UART_BUFFER_SIZE; i++) //
+	{										//
+		printf(" 0x%02X", UARTFrameOut[i]); //
 	} //
 	printf("\n");
+	//ssize_t bytes_written = write(uart_fd, UARTFrameOut, UART_BUFFER_SIZE); // Writes data to UART port
 
 	for (i = 0; i < UART_BUFFER_SIZE; i++) // Reset value for UARTFrameOut
 	{
