@@ -20,13 +20,6 @@ namespace Projet5e_PosteDeComande
         private string callingFunction = string.Empty;
         string selectedPort;
 
-        public static class PuckColors
-        {
-            public const char ORANGE = 'O';
-            public const char NOIR = 'N';
-            public const char METALLIQUE = 'M';
-        }
-
         public enum StationState
         {
             WEIGHING_STATION,
@@ -45,6 +38,7 @@ namespace Projet5e_PosteDeComande
             this.FormClosing += new FormClosingEventHandler(MainForm_FormClosing);
             uartPort.DataReceived += ReceptionDeLaTrame;            // Register the DataReceived event handler
             Grams_Checkbox.Checked = true;
+
         }
 
         private void PopulateCOMPorts()
@@ -61,7 +55,7 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementPositionVehicule()
         {
-           switch (cTrameIn[5])             // Convertir 1, 3 ou 5 selon la position envoyée par le véhicule
+           switch (cTrameIn[7])             // Convertir 1, 3 ou 5 selon la position envoyée par le véhicule
             {                               // en l'une des 4 positions posibles pour l'affichage du véhicule
                 case 1:
                     currentState = StationState.WEIGHING_STATION;
@@ -85,38 +79,67 @@ namespace Projet5e_PosteDeComande
                 case StationState.WEIGHING_STATION:
                     // Set position for WEIGHING_STATION
                     Vehicle_Picture.Location = new Point(208, 164);
-                    Vehicle_Picture.RightToLeft = RightToLeft.No;
+                    if (Vehicle_Picture.IsMirrored == true)
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        Vehicle_Picture.Refresh();
+                    }
+                    else
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                        Vehicle_Picture.Refresh();
+                    }
                     break;
 
                 case StationState.OTW_TO_WEIGHING:
                     // Set position for OTW_TO_WEIGHING
                     Vehicle_Picture.Location = new Point(356, 174);
-                    Vehicle_Picture.RightToLeft = RightToLeft.No;
+                    if (Vehicle_Picture.IsMirrored == true)
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        Vehicle_Picture.Refresh();
+                    }
+                    else
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                        Vehicle_Picture.Refresh();
+                    }
                     break;
 
                 case StationState.OTW_TO_SORTING:
                     // Set position for OTW_TO_SORTING
                     Vehicle_Picture.Location = new Point(356, 174);
-                    Vehicle_Picture.RightToLeft = RightToLeft.Yes;
+                    if (Vehicle_Picture.IsMirrored == false)
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        Vehicle_Picture.Refresh();
+                    }
+                    else
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                        Vehicle_Picture.Refresh();
+                    }
                     break;
 
                 case StationState.SORTING_STATION:
                     // Set position for SORTING_STATION
                     Vehicle_Picture.Location = new Point(521, 163);
-                    Vehicle_Picture.RightToLeft = RightToLeft.Yes;
+                    if (Vehicle_Picture.IsMirrored == false)
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                        Vehicle_Picture.Refresh();
+                    }
+                    else
+                    {
+                        Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                        Vehicle_Picture.Refresh();
+                    }
                     break;
             }
-            Vehicle_Picture.Refresh();  //Refreshes the picture's orientation and position after the switch/case
         }
         private void AjustementDuPoids()
         {
             double dGramsToOunces = 28.3495;            //Valeur de conversion grammes / onces
-
-            //string ToConvert = cTrameIn[4].ToString();
-            //ToConvert += ".";
-            //ToConvert += cTrameIn[5].ToString();
-            //string Converted = ToConvert.Substring(2);
-            //dPoidsRondelle = Convert.ToDouble(Converted);
 
             dPoidsRondelle = Convert.ToDouble(cTrameIn[5]);
             dPoidsRondelle = dPoidsRondelle + Convert.ToDouble(((cTrameIn[6])/100));
@@ -129,33 +152,26 @@ namespace Projet5e_PosteDeComande
         }
         private void AjustementDeLaCouleur()
         {
-            if (cTrameIn[4] == PuckColors.ORANGE)
+            if (cTrameIn[4] == 'O')
             {
                 OrangePuck_Panel.Visible = true;
                 BlackPuck_Panel.Visible  = false;
                 GreyPuck_Panel.Visible   = false;
                 CouleurNonDefinie_Label.Visible  = false;
             }
-            if (cTrameIn[4] == PuckColors.NOIR)
+            else if (cTrameIn[4] == 'N')
             {
                 OrangePuck_Panel.Visible = false;
                 BlackPuck_Panel.Visible  = true;
                 GreyPuck_Panel.Visible   = false;
                 CouleurNonDefinie_Label.Visible  = false;
             }
-            if (cTrameIn[4] == PuckColors.METALLIQUE)
+            else if (cTrameIn[4] == 'M')
             {
                 OrangePuck_Panel.Visible = false;
                 BlackPuck_Panel.Visible  = false;
                 GreyPuck_Panel.Visible   = true;
                 CouleurNonDefinie_Label.Visible  = false;
-            }
-            else
-            {
-                OrangePuck_Panel.Visible = false;
-                BlackPuck_Panel.Visible = false;
-                GreyPuck_Panel.Visible = false;
-                CouleurNonDefinie_Label.Visible = true;
             }
         }
         private void EnvoiDeLaTrame()
@@ -177,6 +193,13 @@ namespace Projet5e_PosteDeComande
                 cTrameOut[2] = 0x01;    // Identifier for Control post
                 cTrameOut[3] = 0x41;    // Command ('A' for stop) 
             }
+            else if (callingFunction == "Connecter")
+            {
+                cTrameOut[0] = 0x24;    // Start condition for UART frames
+                cTrameOut[1] = 0x08;    // Amount of bytes to be transmitted
+                cTrameOut[2] = 0x01;    // Identifier for Control post
+                cTrameOut[3] = 0x52;    // Command ('R' for reset) 
+            }
             byte checksum = 0x00;
             for (int i = 2; i < 10; i++)        // Calculate checksum
             {
@@ -195,6 +218,8 @@ namespace Projet5e_PosteDeComande
             Array.Clear(cTrameOut, 0, cTrameOut.Length);    // Clear frame data after sending
             uartPort.DataReceived += ReceptionDeLaTrame;    // Re-enable the DataReceived event after the data is sent
         }
+
+        private delegate void DelegateReceiveManagement();
         private void ReceptionDeLaTrame(object sender, SerialDataReceivedEventArgs e)
         {
             try
@@ -202,7 +227,7 @@ namespace Projet5e_PosteDeComande
                 if (uartPort.BytesToRead >= 11)          // Only process data when available
                 {
                     Array.Clear(cTrameIn, 0, cTrameIn.Length);      //Clear frame data before attempting to read
-                    uartPort.Read(cTrameIn, 0, cTrameIn.Length);    // Read up to 10 bytes from the serial port
+                    uartPort.Read(cTrameIn, 0, cTrameIn.Length);    // Read up to 11 bytes from the serial port
 
                     Debug.WriteLine("Trame Reçue par le PC: ");
                     foreach (byte b in cTrameIn)
@@ -221,30 +246,7 @@ namespace Projet5e_PosteDeComande
 
                         if (checksum == cTrameIn[10])           //If the checksum matches, update the inteface
                         {
-                            if (cTrameIn[3] == 'I')             //Si la trame donne une information au système
-                            {
-                                AjustementDuPoids();            //Ajustement du poids de la puck transportée par le véhicule
-                                AjustementDeLaCouleur();        //Ajustement de la couleur de la puck transportée par le véhicule
-                                AjustementPositionVehicule();   //Ajustement de la position du véhicule
-                            }
-                            else if (cTrameIn[3] == 'D')
-                            {
-                                Arreter_Button.Enabled = true;          //Activation du bouton pour arreter l'usine
-                                Connecter_Button.Enabled = false;       //Desactivation de l'option de deconnecter le port UART
-                                Demarrer_Button.Enabled = false;        //Desactivation du bouton Demarrer
-                            }
-                            else if (cTrameIn[3] == 'A')
-                            {
-                                Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
-                                Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
-                                Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
-                            }
-                            else if (cTrameIn[3] == 'K')
-                            {
-                                Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
-                                Connecter_Button.Enabled = false;       //Reactivation de l'option de deconnecter le port UART
-                                Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
-                            }
+                            Invoke(new DelegateReceiveManagement(ReceiveManagement));
                         }
                         else   //Handle checksum mismatch
                         {
@@ -263,6 +265,47 @@ namespace Projet5e_PosteDeComande
                 MessageBox.Show($"Error receiving data: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+        void ReceiveManagement()
+        {
+            if (cTrameIn[3] == 'I')             //Si la trame donne une information au système
+            {
+                AjustementDuPoids();            //Ajustement du poids de la puck transportée par le véhicule
+                AjustementDeLaCouleur();        //Ajustement de la couleur de la puck transportée par le véhicule
+                AjustementPositionVehicule();   //Ajustement de la position du véhicule
+            }
+            else if (cTrameIn[3] == 'D')
+            {
+                Arreter_Button.Enabled = true;          //Activation du bouton pour arreter l'usine
+                Connecter_Button.Enabled = false;       //Desactivation de l'option de deconnecter le port UART
+                Demarrer_Button.Enabled = false;        //Desactivation du bouton Demarrer
+            }
+            else if (cTrameIn[3] == 'A')
+            {
+                Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
+                Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
+                Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
+            }
+            else if (cTrameIn[3] == 'K')
+            {
+                Demarrer_Button.Enabled = true;                 //Activation du bouton pour demarrer l'usine
+                Connecter_Button.Enabled = false;               //Reactivation de l'option de deconnecter le port UART
+                Arreter_Button.Enabled = false;                 //Desactivation du bouton Demarrer
+                AffichagePoids_Label.Text = "Non défini";       //Reset du label du poids sur un reset de l'usine
+                OrangePuck_Panel.Visible = false;               //Reset de l'affichage de la couleur
+                BlackPuck_Panel.Visible = false;                //^^^^^^
+                GreyPuck_Panel.Visible = false;                 //^^^^^^
+                CouleurNonDefinie_Label.Visible = false;        //^^^^^^
+                Vehicle_Picture.Location = new Point(208, 164);
+                if (Vehicle_Picture.IsMirrored == true)
+                {
+                    Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipX);
+                }
+                else
+                {
+                    Vehicle_Picture.Image.RotateFlip(RotateFlipType.RotateNoneFlipNone);
+                }
+            }
+        }
         private void Connecter_Button_Click(object sender, EventArgs e)
         {
             if (Connecter_Button.Text == "Connecter")           //Si l'utilisateur désire se connecter
@@ -271,6 +314,8 @@ namespace Projet5e_PosteDeComande
                 COMPorts_comboBox.Enabled = false;              //On désactive l'option de changer de COM port
                 Connecter_Button.Text = "Déconnecter";          //On remplace le texte du bouton par "Déconnecter"
                 InitUART();
+                callingFunction = "Connecter";
+                EnvoiDeLaTrame();
             }
             else if (Connecter_Button.Text == "Déconnecter")    //Si l'utilisateur désire se déconnecter
             {                                                   //
