@@ -145,7 +145,7 @@
                 <expressions>
                     <item>serviceProtocole637.octetsATransmettre</item>
                     <item>serviceProtocoleCAN.octetsRecus</item>
-                    <item></item>
+                    <item />
                 </expressions>
                 <col-names>
                     <item>Expression</item>

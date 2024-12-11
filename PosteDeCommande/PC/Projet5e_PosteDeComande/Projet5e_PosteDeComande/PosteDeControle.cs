@@ -239,6 +239,12 @@ namespace Projet5e_PosteDeComande
                                 Connecter_Button.Enabled = true;        //Reactivation de l'option de deconnecter le port UART
                                 Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
                             }
+                            else if (cTrameIn[3] == 'K')
+                            {
+                                Demarrer_Button.Enabled = true;         //Activation du bouton pour demarrer l'usine
+                                Connecter_Button.Enabled = false;       //Reactivation de l'option de deconnecter le port UART
+                                Arreter_Button.Enabled = false;         //Desactivation du bouton Demarrer
+                            }
                         }
                         else   //Handle checksum mismatch
                         {
